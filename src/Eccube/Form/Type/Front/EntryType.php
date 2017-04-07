@@ -48,48 +48,8 @@ class EntryType extends AbstractType
             ->add('name', 'name', array(
                 'required' => true,
             ))
-//            ->add('kana', 'kana', array(
-//                'required' => true,
-//            ))
-//            ->add('company_name', 'text', array(
-//                'required' => false,
-//                'constraints' => array(
-//                    new Assert\Length(array(
-//                        'max' => $this->config['stext_len'],
-//                    )),
-//                ),
-//            ))
-//            ->add('zip', 'zip')
-//            ->add('address', 'address')
-//            ->add('tel', 'tel', array(
-//                'required' => true,
-//            ))
-//            ->add('fax', 'tel', array(
-//                'required' => false,
-//            ))
             ->add('email', 'email')
             ->add('password', 'password');
-//            ->add('birth', 'birthday', array(
-//                'required' => false,
-//                'input' => 'datetime',
-//                'years' => range(date('Y'), date('Y') - $this->config['birth_max']),
-//                'widget' => 'choice',
-//                'format' => 'yyyy/MM/dd',
-//                'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
-//                'constraints' => array(
-//                    new Assert\LessThanOrEqual(array(
-//                        'value' => date('Y-m-d'),
-//                        'message' => 'form.type.select.selectisfuturedate',
-//                    )),
-//                ),
-//            ))
-//            ->add('sex', 'sex', array(
-//                'required' => false,
-//            ))
-//            ->add('job', 'job', array(
-//                'required' => false,
-//            ))
-//            ->add('save', 'submit', array('label' => 'この内容で登録する'));
     }
 
     /**

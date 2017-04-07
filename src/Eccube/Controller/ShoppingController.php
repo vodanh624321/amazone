@@ -99,10 +99,15 @@ class ShoppingController extends AbstractController
 
                 if (is_null($Customer)) {
                     log_info('未ログインのためログイン画面にリダイレクト');
-                    return $app->redirect($app->url('shopping_nonmember'));
+                    return $app->redirect($app->url('shopping_login'));
                 }
             } else {
+                /* @var $Customer \Eccube\Entity\Customer */
                 $Customer = $app->user();
+                if (is_null($Customer->getZipcode())) {
+                    log_info('Login but not fill address.');
+                    return $app->redirect($app->url('shopping_nonmember'));
+                }
             }
 
             try {
@@ -939,7 +944,12 @@ class ShoppingController extends AbstractController
 
         // ログイン済みの場合は, 購入画面へリダイレクト.
         if ($app->isGranted('ROLE_USER')) {
-            return $app->redirect($app->url('shopping'));
+            /* @var $Customer \Eccube\Entity\Customer */
+            $Customer = $app->user();
+            if (!is_null($Customer->getZipcode())) {
+                log_info('Login but not fill address.');
+                return $app->redirect($app->url('shopping'));
+            }
         }
 
         // カートチェック
@@ -968,7 +978,7 @@ class ShoppingController extends AbstractController
             log_info('非会員お客様情報登録開始');
 
             $data = $form->getData();
-            $Customer = new Customer();
+            $Customer = $app->user();
             $Customer
                 ->setName01($data['name01'])
                 ->setName02($data['name02'])
@@ -985,7 +995,8 @@ class ShoppingController extends AbstractController
                 ->setAddr02($data['addr02']);
 
             // 非会員複数配送用
-            $CustomerAddress = new CustomerAddress();
+            $CustomerAddressArr = $Customer->getCustomerAddresses();
+            $CustomerAddress = $CustomerAddressArr[0];
             $CustomerAddress
                 ->setCustomer($Customer)
                 ->setName01($data['name01'])
@@ -1002,11 +1013,13 @@ class ShoppingController extends AbstractController
                 ->setAddr01($data['addr01'])
                 ->setAddr02($data['addr02'])
                 ->setDelFlg(Constant::DISABLED);
-            $Customer->addCustomerAddress($CustomerAddress);
+
+            $app['orm.em']->persist($Customer);
+            $app['orm.em']->persist($CustomerAddress);
+            $app['orm.em']->flush();
 
             // 受注情報を取得
             $Order = $app['eccube.service.shopping']->getOrder($app['config']['order_processing']);
-
             // 初回アクセス(受注データがない)の場合は, 受注情報を作成
             if (is_null($Order)) {
                 // 受注情報を作成

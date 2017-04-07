@@ -49,7 +49,7 @@ class ChangeController extends AbstractController
         $Customer->setPassword($app['config']['default_password']);
 
         /* @var $builder \Symfony\Component\Form\FormBuilderInterface */
-        $builder = $app['form.factory']->createBuilder('entry', $Customer);
+        $builder = $app['form.factory']->createBuilder('mypage', $Customer);
 
         $event = new EventArgs(
             array(

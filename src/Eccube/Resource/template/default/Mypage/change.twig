@@ -63,13 +63,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             {{ form_errors(form.kana.kana02) }}
                         </dd>
                     </dl>
-                    <dl id="detail_box__company_name">
-                        <dt>{{ form_label(form.company_name) }}</dt>
-                        <dd class="form-group input_name">
-                            {{ form_widget(form.company_name) }}
-                            {{ form_errors(form.company_name) }}
-                        </dd>
-                    </dl>
                     <dl id="detail_box__address_detail">
                         <dt>{{ form_label(form.address) }}</dt>
                         <dd>
@@ -89,35 +82,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             </div>
                         </dd>
                     </dl>
-                    <dl id="detail_box__fax">
-                        <dt>{{ form_label(form.fax) }}</dt>
-                        <dd>
-                            <div class="form-inline form-group input_tel">
-                                {{ form_widget(form.fax, {attr : {class : 'short'}}) }}
-                                {{ form_errors(form.fax) }}
-                            </div>
-                        </dd>
-                    </dl>
                     <dl id="detail_box__email">
                         <dt>{{ form_label(form.email) }}</dt>
                         <dd>
-                            {% for emailField in form.email %}
-                            <div class="form-group {% if emailField.vars.errors is not empty %}has-error{% endif %}">
-                                {{ form_widget(emailField) }}
-                                {{ form_errors(emailField) }}
+                            <div class="form-group {% if form.email.vars.errors is not empty %}has-error{% endif %}">
+                                {{ form_widget(form.email, { attr : { placeholder: 'メールアドレス' }}) }}
+                                {{ form_errors(form.email) }}
                             </div>
-                            {% endfor %}
                         </dd>
                     </dl>
                     <dl id="detail_box__password">
                         <dt>{{ form_label(form.password) }}</dt>
                         <dd>
-                            {% for passwordField in form.password %}
-                            <div class="form-group {% if passwordField.vars.errors is not empty %}has-error{% endif %}">
-                                {{ form_widget(passwordField, { type : 'password' }) }}
-                                {{ form_errors(passwordField) }}
+                            <div class="form-group {% if form.password.vars.errors is not empty %}has-error{% endif %}">
+                                {{ form_widget(form.password, { type : 'password'}) }}
+                                {{ form_errors(form.password) }}
                             </div>
-                            {% endfor %}
                         </dd>
                     </dl>
                 </div>
@@ -137,15 +117,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             <div class="form-group form-inline">
                                 {{ form_widget(form.sex) }}
                                 {{ form_errors(form.sex) }}
-                            </div>
-                        </dd>
-                    </dl>
-                    <dl id="detail_box__job">
-                        <dt>{{ form_label(form.job) }}</dt>
-                        <dd>
-                            <div class="form-group form-inline">
-                                {{ form_widget(form.job) }}
-                                {{ form_errors(form.job) }}
                             </div>
                         </dd>
                     </dl>

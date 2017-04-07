@@ -80,14 +80,6 @@
                                 {{ form_errors(form.kana.kana02) }}
                             </div>
                         </div>
-                        {# 会社名 #}
-                        <div id="detail_box__company_name" class="form-group">
-                            {{ form_label(form.company_name) }}
-                            <div class="col-sm-9 col-lg-10">
-                                {{ form_widget(form.company_name) }}
-                                {{ form_errors(form.company_name) }}
-                            </div>
-                        </div>
                         {# 住所：郵便番号 #}
                         <div id="detail_box__address" class="form-group">
                             {{ form_label(form.address) }}
@@ -138,16 +130,6 @@
                                 {{ form_errors(form.tel.tel03) }}
                             </div>
                         </div>
-                        {# FAX番号 #}
-                        <div id="detail_box__fox" class="form-group">
-                            {{ form_label(form.fax) }}
-                            <div class="col-sm-9 col-lg-10 input_tel form-inline">
-                                {{ form_widget(form.fax.fax01) }}-{{ form_widget(form.fax.fax02) }}-{{ form_widget(form.fax.fax03) }}
-                                {{ form_errors(form.fax.fax01) }}
-                                {{ form_errors(form.fax.fax02) }}
-                                {{ form_errors(form.fax.fax03) }}
-                            </div>
-                        </div>
                         {# パスワード #}
                         <div id="detail_box__password_first" class="form-group">
                             {{ form_label(form.password.first) }}
@@ -169,14 +151,6 @@
                             <div class="col-sm-9 col-lg-10">
                                 {{ form_widget(form.sex) }}
                                 {{ form_errors(form.sex) }}
-                            </div>
-                        </div>
-                        {# 職業 #}
-                        <div id="detail_box__job" class="form-group">
-                            {{ form_label(form.job) }}
-                            <div class="col-sm-9 col-lg-10">
-                                {{ form_widget(form.job) }}
-                                {{ form_errors(form.job) }}
                             </div>
                         </div>
                         {# 生年月日 #}

@@ -21,7 +21,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-namespace Eccube\Form\Type\Admin;
+
+namespace Eccube\Form\Type\Front;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -29,7 +30,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CustomerType extends AbstractType
+class MyPageType extends AbstractType
 {
     protected $config;
 
@@ -43,45 +44,26 @@ class CustomerType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $config = $this->config;
-
         $builder
             ->add('name', 'name', array(
                 'required' => true,
             ))
             ->add('kana', 'kana', array(
-                'required' => false,
-            ))
-            ->add('zip', 'zip', array(
-                'required' => false,
-            ))
-            ->add('address', 'address', array(
-                'required' => false,
-            ))
-            ->add('tel', 'tel', array(
-                'required' => false,
-            ))
-            ->add('email', 'email', array(
                 'required' => true,
-                'constraints' => array(
-                    new Assert\NotBlank(),
-                    // configでこの辺りは変えられる方が良さそう
-                    new Assert\Email(array('strict' => true)),
-                    new Assert\Regex(array(
-                        'pattern' => '/^[[:graph:][:space:]]+$/i',
-                        'message' => 'form.type.graph.invalid',
-                    )),
-                ),
             ))
-            ->add('sex', 'sex', array(
-                'required' => false,
+            ->add('zip', 'zip')
+            ->add('address', 'address')
+            ->add('tel', 'tel', array(
+                'required' => true,
             ))
+            ->add('email', 'email')
+            ->add('password', 'text')
             ->add('birth', 'birthday', array(
                 'required' => false,
                 'input' => 'datetime',
                 'years' => range(date('Y'), date('Y') - $this->config['birth_max']),
                 'widget' => 'choice',
-                'format' => 'yyyy-MM-dd',
+                'format' => 'yyyy/MM/dd',
                 'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
                 'constraints' => array(
                     new Assert\LessThanOrEqual(array(
@@ -90,30 +72,10 @@ class CustomerType extends AbstractType
                     )),
                 ),
             ))
-            ->add('password', 'repeated_password', array(
-                // 'type' => 'password',
-                'first_options'  => array(
-                    'label' => 'パスワード',
-                ),
-                'second_options' => array(
-                    'label' => 'パスワード(確認)',
-                ),
-            ))
-            ->add('status', 'customer_status', array(
-                'required' => true,
-                'constraints' => array(
-                    new Assert\NotBlank(),
-                ),
-            ))
-            ->add('note', 'textarea', array(
-                'label' => 'SHOP用メモ',
+            ->add('sex', 'sex', array(
                 'required' => false,
-                'constraints' => array(
-                    new Assert\Length(array(
-                        'max' => $config['ltext_len'],
-                    )),
-                ),
-            ));
+            ))
+            ->add('save', 'submit', array('label' => 'この内容で登録する'));
     }
 
     /**
@@ -131,6 +93,7 @@ class CustomerType extends AbstractType
      */
     public function getName()
     {
-        return 'admin_customer';
+        // todo entry,mypageで共有されているので名前を変更する
+        return 'mypage';
     }
 }
