@@ -79,7 +79,6 @@ class EntryController extends AbstractController
                     $form = $builder->getForm();
                     $form->handleRequest($request);
                     log_info('会員登録確認完了');
-
                     return $app->render('Entry/confirm.twig', array(
                         'form' => $form->createView(),
                     ));

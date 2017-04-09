@@ -45,7 +45,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         </dl>
                         <dl id="confirm_box__password">
                             <dt>{{ form_label(form.password) }}</dt>
-                            <dd>*********</dd>
+                            {{ form_widget(form.password) }}
+                            <dd>
+                                <div class="form-group">
+                                    **********
+                                </div>
+                            </dd>
                         </dl>
                     </div>
 

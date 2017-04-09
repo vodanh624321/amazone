@@ -66,14 +66,6 @@ $(function() {
                                 {{ form_errors(form.kana.kana02) }}
                             </dd>
                         </dl>
-                        <dl id="detail_box__company_name">
-                            <dt>{{ form_label(form.company_name) }}</dt>
-                            <dd class="form-group input_name">
-                                {{ form_widget(form.company_name) }}
-                                {{ form_errors(form.company_name) }}
-                            </dd>
-                        </dl>
-
                         <dl id="detail_box__address">
                             <dt>{{ form_label(form.address) }}</dt>
                             <dd>
@@ -91,15 +83,6 @@ $(function() {
                                 <div class="form-inline form-group input_tel">
                                     {{ form_widget(form.tel, {attr : {class : 'short'}}) }}
                                     {{ form_errors(form.tel) }}
-                                </div>
-                            </dd>
-                        </dl>
-                        <dl id="detail_box__fax">
-                            <dt>{{ form_label(form.fax) }}</dt>
-                            <dd>
-                                <div class="form-inline form-group input_tel">
-                                    {{ form_widget(form.fax, {attr : {class : 'short'}}) }}
-                                    {{ form_errors(form.fax) }}
                                 </div>
                             </dd>
                         </dl>
