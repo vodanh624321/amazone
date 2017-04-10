@@ -104,7 +104,7 @@ class ShoppingController extends AbstractController
             } else {
                 /* @var $Customer \Eccube\Entity\Customer */
                 $Customer = $app->user();
-                if (is_null($Customer->getZipcode())) {
+                if (is_null($Customer->getZip01())) {
                     log_info('Login but not fill address.');
                     return $app->redirect($app->url('shopping_nonmember'));
                 }

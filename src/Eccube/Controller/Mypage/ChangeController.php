@@ -41,6 +41,7 @@ class ChangeController extends AbstractController
      */
     public function index(Application $app, Request $request)
     {
+        /* @var  $Customer \Eccube\Entity\Customer */
         $Customer = $app->user();
         $LoginCustomer = clone $Customer;
         $app['orm.em']->detach($LoginCustomer);
@@ -78,6 +79,23 @@ class ChangeController extends AbstractController
                     $app['eccube.repository.customer']->encryptPassword($app, $Customer)
                 );
             }
+            $CustomerAddresses = $Customer->getCustomerAddresses();
+            $CustomerAddress = $CustomerAddresses[0];
+            $CustomerAddress
+                ->setName01($Customer->getName01())
+                ->setName02($Customer->getName02())
+                ->setKana01($Customer->getKana01())
+                ->setKana02($Customer->getKana02())
+                ->setTel01($Customer->getTel01())
+                ->setTel02($Customer->getTel02())
+                ->setTel03($Customer->getTel03())
+                ->setZip01($Customer->getZip01())
+                ->setZip02($Customer->getZip02())
+                ->setZipCode($Customer->getZip01().$Customer->getZip02())
+                ->setPref($Customer->getPref())
+                ->setAddr01($Customer->getAddr01())
+                ->setAddr02($Customer->getAddr02());
+
             $app['orm.em']->flush();
 
             log_info('会員編集完了');
