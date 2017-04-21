@@ -101,26 +101,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         </dd>
                     </dl>
                 </div>
-                <div class="dl_table not_required">
-                    <dl id="detail_box__birth">
-                        <dt>{{ form_label(form.birth) }}</dt>
-                        <dd>
-                            <div class="form-group form-inline">
-                                {{ form_widget(form.birth) }}
-                                {{ form_errors(form.birth) }}
-                            </div>
-                        </dd>
-                    </dl>
-                    <dl id="detail_box__sex">
-                        <dt>{{ form_label(form.sex) }}</dt>
-                        <dd>
-                            <div class="form-group form-inline">
-                                {{ form_widget(form.sex) }}
-                                {{ form_errors(form.sex) }}
-                            </div>
-                        </dd>
-                    </dl>
-                </div>
                 {% for f in form %}
                     {% if f.vars.name matches '[^plg*]' %}
                         <div class="extra-form dl_table">

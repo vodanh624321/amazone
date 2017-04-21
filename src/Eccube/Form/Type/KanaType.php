@@ -42,7 +42,7 @@ class KanaType extends AbstractType
     {
         // ひらがなをカタカナに変換する
         // 引数はmb_convert_kanaのもの
-        $builder->addEventSubscriber(new \Eccube\EventListener\ConvertKanaListener('CV'));
+        //$builder->addEventSubscriber(new \Eccube\EventListener\ConvertKanaListener('CV'));
     }
 
     /**
@@ -56,9 +56,6 @@ class KanaType extends AbstractType
                     'placeholder' => 'Kana01',
                 ),
                 'constraints' => array(
-                    new Assert\Regex(array(
-                        'pattern' => "/^[ァ-ヶｦ-ﾟー]+$/u",
-                    )),
                     new Assert\Length(array(
                         'max' => $this->config['kana_len'],
                     )),
@@ -69,9 +66,6 @@ class KanaType extends AbstractType
                     'placeholder' => 'Kana02',
                 ),
                 'constraints' => array(
-                    new Assert\Regex(array(
-                        'pattern' => "/^[ァ-ヶｦ-ﾟー]+$/u",
-                    )),
                     new Assert\Length(array(
                         'max' => $this->config['kana_len'],
                     )),
