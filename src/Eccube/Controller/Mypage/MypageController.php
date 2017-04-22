@@ -123,6 +123,42 @@ class MypageController extends AbstractController
     }
 
     /**
+     * マイページ
+     *
+     * @param Application $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function streaming(Application $app, Request $request)
+    {
+        $Customer = $app['user'];
+
+        /* @var $softDeleteFilter \Eccube\Doctrine\Filter\SoftDeleteFilter */
+        $softDeleteFilter = $app['orm.em']->getFilters()->getFilter('soft_delete');
+        $softDeleteFilter->setExcludes(array(
+            'Eccube\Entity\ProductClass',
+        ));
+
+        // 購入処理中/決済処理中ステータスの受注を非表示にする.
+        $app['orm.em']
+            ->getFilters()
+            ->enable('incomplete_order_status_hidden');
+
+        // paginator
+        $qb = $app['eccube.repository.order']->getQueryBuilderStreamingVideoByCustomer($Customer);
+
+        $pagination = $app['paginator']()->paginate(
+            $qb,
+            $request->get('pageno', 1),
+            $app['config']['search_pmax']
+        );
+
+        return $app->render('Mypage/streaming.twig', array(
+            'pagination' => $pagination,
+        ));
+    }
+
+    /**
      * 購入履歴詳細を表示する.
      *
      * @param Application $app
