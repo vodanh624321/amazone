@@ -25,11 +25,55 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% set body_class = 'mypage' %}
 
+{% block javascript %}
+    <script>
+        // 並び順を変更
+        function fnChangeOrderBy(orderby) {
+            eccube.setValue('orderby', orderby);
+            eccube.setValue('pageno', 1);
+            eccube.submitForm();
+        }
+
+        // 表示件数を変更
+        function fnChangeDispNumber(dispNumber) {
+            eccube.setValue('disp_number', dispNumber);
+            eccube.setValue('pageno', 1);
+            eccube.submitForm();
+        }
+        // 商品表示BOXの高さを揃える
+        $(window).load(function() {
+            $('.product_item').matchHeight();
+        });
+    </script>
+{% endblock %}
+
 {% block main %}
     <h1 class="page-heading">マイページ/ストリーミング動画</h1>
     <div id="favorite_wrap" class="container-fluid">
-
         {% include 'Mypage/navi.twig' %}
+        <!-- ▲topicpath▲ -->
+        <div id="result_info_box" class="row">
+            <form name="page_navi_top" id="page_navi_top" action="?">
+                <div id="search" class="col-sm-6 no-padding search">
+                    <div class="input_search clearfix" style="padding: 0 10px 0 1em;">
+                        <input type="search" id="name" name="name" maxlength="50" placeholder="動画名・動画情報" style="width: 50%;" value="{{ form.name.vars.value }}">
+                        <select id="" name="orderby" onchange="javascript:fnChangeOrderBy(this.value);" class="form-control" style="max-width: 210px;">
+                            <option value="4" {% if orderby == 4 %} selected {% endif %}>購入日が新しい順</option>
+                            <option value="5" {% if orderby == 5 %} selected {% endif %}>購入日が古い順</option>
+                        </select>
+                        <button class="btn-danger btn" type="submit">更新</button>
+                    </div>
+                </div>
+
+                <div id="result_info_box__menu_box" class="col-sm-6 no-padding col-sm-offset-6">
+                    <ul id="result_info_box__menu" class="pagenumberarea clearfix">
+                        <li id="search" class="search">
+                            {{ form_widget(disp_number_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeDispNumber(this.value);"}}) }}
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
 
         <div id="favorite_list_box" class="row">
             <div id="favorite_list_box__body" class="col-md-12">
@@ -46,6 +90,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                             <div id="favorite_list__image--{{ Product.id }}" class="item_photo">
                                                 <img src="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}" alt="{{ Product.name }}"/>
                                             </div>
+                                        </a>
+                                        <a href="{{ url('mypage_favorite_delete', { id : Product.id }) }}" {{ csrf_token_for_anchor() }}>
+                                            <button type="button" class="btn_circle"><svg class="cb cb-heart"><use xlink:href="#cb-heart"></use></svg></button>
                                         </a>
                                         <a href="{{ url('product_detail', {'id': Product.id}) }}">
                                             <dl id="favorite_list__detail--{{ Product.id }}">

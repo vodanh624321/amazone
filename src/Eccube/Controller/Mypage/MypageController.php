@@ -132,7 +132,21 @@ class MypageController extends AbstractController
     public function streaming(Application $app, Request $request)
     {
         $Customer = $app['user'];
+        // searchForm
+        /* @var $builder \Symfony\Component\Form\FormBuilderInterface */
+        $builder = $app['form.factory']->createNamedBuilder('', 'search_product');
+        $builder->setAttribute('freeze', true);
+        $builder->setAttribute('freeze_display_text', false);
+        if ($request->getMethod() === 'GET') {
+            $builder->setMethod('GET');
+        }
 
+        /* @var $searchForm \Symfony\Component\Form\FormInterface */
+        $searchForm = $builder->getForm();
+        $searchForm->handleRequest($request);
+        // paginator
+        $searchData = $searchForm->getData();
+        $searchData['orderby'] = $request->get("orderby");
         /* @var $softDeleteFilter \Eccube\Doctrine\Filter\SoftDeleteFilter */
         $softDeleteFilter = $app['orm.em']->getFilters()->getFilter('soft_delete');
         $softDeleteFilter->setExcludes(array(
@@ -145,7 +159,7 @@ class MypageController extends AbstractController
             ->enable('incomplete_order_status_hidden');
 
         // paginator
-        $qb = $app['eccube.repository.order']->getQueryBuilderStreamingVideoByCustomer($Customer);
+        $qb = $app['eccube.repository.order']->getQueryBuilderStreamingVideoBySearchData($Customer, $searchData);
 
         $pagination = $app['paginator']()->paginate(
             $qb,
@@ -153,8 +167,24 @@ class MypageController extends AbstractController
             $app['config']['search_pmax']
         );
 
+        // 表示件数
+        $builder = $app['form.factory']->createNamedBuilder('disp_number', 'product_list_max', null, array(
+            'empty_data' => null,
+            'required' => false,
+            'label' => '表示件数',
+            'allow_extra_fields' => true,
+        ));
+        if ($request->getMethod() === 'GET') {
+            $builder->setMethod('GET');
+        }
+        $dispNumberForm = $builder->getForm();
+        $dispNumberForm->handleRequest($request);
+
         return $app->render('Mypage/streaming.twig', array(
             'pagination' => $pagination,
+            'form' => $searchForm->createView(),
+            'disp_number_form' => $dispNumberForm->createView(),
+            'orderby' => $request->get("orderby")
         ));
     }
 
