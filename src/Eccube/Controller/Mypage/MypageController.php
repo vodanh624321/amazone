@@ -31,6 +31,7 @@ use Eccube\Event\EccubeEvents;
 use Eccube\Event\EventArgs;
 use Eccube\Exception\CartException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MypageController extends AbstractController
@@ -161,10 +162,11 @@ class MypageController extends AbstractController
         // paginator
         $qb = $app['eccube.repository.order']->getQueryBuilderStreamingVideoBySearchData($Customer, $searchData);
 
+
         $pagination = $app['paginator']()->paginate(
             $qb,
-            $request->get('pageno', 1),
-            $app['config']['search_pmax']
+            !empty($searchData['pageno']) ? $searchData['pageno'] : 1,
+            !empty($searchData['disp_number']) ? $searchData['disp_number']->getId() : $app['config']['search_pmax']
         );
 
         // 表示件数
@@ -337,6 +339,20 @@ class MypageController extends AbstractController
         } else {
             throw new NotFoundHttpException();
         }
+    }
+
+    public function streamingFavorite(Application $app, Request $request)
+    {
+        try {
+            $productId = $request->get("product_id");
+            $Customer = $app->user();
+            $Product = $app['eccube.repository.product']->find($productId);
+            $app['eccube.repository.customer_favorite_product']->addFavorite($Customer, $Product);
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException();
+        }
+
+        return new Response();
     }
 
     /**
