@@ -497,6 +497,11 @@ class OrderRepository extends EntityRepository
             }
         }
 
+        if (!empty($searchData['heart']) && $searchData['heart'] == 1) {
+            $qb->leftJoin('p.CustomerFavoriteProducts', 'cfp');
+            $qb->andWhere('cfp.Customer = :Customer');
+        }
+
         $qb ->andWhere('o.Customer = :Customer')
             ->andWhere('pt.id = 2')
             ->setParameter('Customer', $Customer);

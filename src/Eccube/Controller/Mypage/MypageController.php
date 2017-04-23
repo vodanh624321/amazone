@@ -148,6 +148,7 @@ class MypageController extends AbstractController
         // paginator
         $searchData = $searchForm->getData();
         $searchData['orderby'] = $request->get("orderby");
+        $searchData['heart'] = $request->get("heart");
         /* @var $softDeleteFilter \Eccube\Doctrine\Filter\SoftDeleteFilter */
         $softDeleteFilter = $app['orm.em']->getFilters()->getFilter('soft_delete');
         $softDeleteFilter->setExcludes(array(
@@ -186,7 +187,8 @@ class MypageController extends AbstractController
             'pagination' => $pagination,
             'form' => $searchForm->createView(),
             'disp_number_form' => $dispNumberForm->createView(),
-            'orderby' => $request->get("orderby")
+            'orderby' => $request->get("orderby"),
+            'heart' => $request->get("heart"),
         ));
     }
 

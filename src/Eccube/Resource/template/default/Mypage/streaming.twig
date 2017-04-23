@@ -49,6 +49,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 }
             });
         }
+        
+        $(document).ready(function () {
+            $(".heart").click(function () {
+                
+            });
+        });
         // 商品表示BOXの高さを揃える
         $(window).load(function() {
             $('.product_item').matchHeight();
@@ -76,7 +82,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
                 <div id="result_info_box__menu_box" class="col-sm-6 no-padding col-sm-offset-6">
                     <ul id="result_info_box__menu" class="pagenumberarea clearfix">
-                        <li id="search" class="search">
+                        <span style="color: red;">&hearts;</span>付き商品のみを
+                        <li id="search" class="search" style="cursor: pointer;">
+                            <input type="radio" name="heart" id="heart1" class="heart" autocomplete="off" {% if heart == 1 or heart is empty %} checked {% endif %} value="1" style="cursor: pointer;">
+                            <label for="heart1">表示</label>
+                            <input type="radio" name="heart" id="heart2" class="heart" autocomplete="off" {% if heart == 0 %} checked {% endif %} value="0" style="cursor: pointer;">
+                            <label for="heart2">解除</label>
                             {{ form_widget(disp_number_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeDispNumber(this.value);"}}) }}
                         </li>
                     </ul>
