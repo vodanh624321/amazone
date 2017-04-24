@@ -507,10 +507,10 @@ class OrderRepository extends EntityRepository
             ->setParameter('Customer', $Customer);
 
         // Order By
-        if (!empty($searchData['orderby']) && $searchData['orderby'] == 4) {
-            $qb->orderBy('o.order_date', 'DESC');
-        } else if (!empty($searchData['orderby']) && $searchData['orderby'] == 5) {
+        if (!empty($searchData['orderby']) && $searchData['orderby'] == 5) {
             $qb->orderBy('o.order_date', 'ASC');
+        } else {
+            $qb->orderBy('o.order_date', 'DESC');
         }
 
         return $qb;
