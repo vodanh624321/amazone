@@ -23,7 +23,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% set body_class = 'product_page' %}
 
+{% block stylesheet %}
+    <link href="http://vjs.zencdn.net/5.19.1/video-js.css" rel="stylesheet">
+{% endblock %}
+
 {% block javascript %}
+    <script src="http://vjs.zencdn.net/5.19.1/video.js"></script>
+
 <script>
     eccube.classCategories = {{ Product.class_categories|json_encode|raw }};
 

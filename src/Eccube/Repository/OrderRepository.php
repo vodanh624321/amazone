@@ -458,13 +458,37 @@ class OrderRepository extends EntityRepository
 
 
     /**
+     * get 注文履歴(Not ストリーミング動画) List
      * @param  \Eccube\Entity\Customer $Customer
      * @return QueryBuilder
      */
     public function getQueryBuilderByCustomer(\Eccube\Entity\Customer $Customer)
     {
         $qb = $this->createQueryBuilder('o')
-            ->where('o.Customer = :Customer')
+            ->leftJoin('o.OrderDetails', 'od')
+            ->leftJoin('od.ProductClass', 'pc')
+            ->leftJoin('pc.ProductType', 'pt')
+            ->where('o.Customer = :Customer and pt.id != 2')
+            ->setParameter('Customer', $Customer);
+
+        // Order By
+        $qb->addOrderBy('o.id', 'DESC');
+
+        return $qb;
+    }
+
+    /**
+     * get ストリーミング動画 List
+     * @param  \Eccube\Entity\Customer $Customer
+     * @return QueryBuilder
+     */
+    public function getQueryBuilderStreamingVideoByCustomer(\Eccube\Entity\Customer $Customer)
+    {
+        $qb = $this->createQueryBuilder('o')
+            ->leftJoin('o.OrderDetails', 'od')
+            ->leftJoin('od.ProductClass', 'pc')
+            ->leftJoin('pc.ProductType', 'pt')
+            ->where('o.Customer = :Customer and pt.id = 2')
             ->setParameter('Customer', $Customer);
 
         // Order By
