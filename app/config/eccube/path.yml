@@ -1,13 +1,13 @@
 # duplicated
-root: /amazone/html/ # root_urlpath
+root: /html/ # root_urlpath
 admin_dir: admin/ # admin_route
-tpl: /amazone/html/user_data/packages/default/ # front_urlpath
-admin_tpl: /amazone/html/user_data/packages/admin/ # admin_urlpath
-image_path: /amazone/html/upload/save_image/ # image_save_urlpath
+tpl: /html/user_data/packages/default/ # front_urlpath
+admin_tpl: /html/user_data/packages/admin/ # admin_urlpath
+image_path: /html/upload/save_image/ # image_save_urlpath
 
 # base valiables
-root_dir: C:\xampp\htdocs\amazone
-root_urlpath: /amazone/html
+root_dir: /home/ubuntu/workspace
+root_urlpath: /html
 template_code: default
 
 # routing
@@ -16,40 +16,40 @@ user_data_route: user_data
 
 # public directory
 public_path: /html
-public_path_realdir: C:\xampp\htdocs\amazone/html
+public_path_realdir: /home/ubuntu/workspace/html
 
 # realdir::image
-image_save_realdir: C:\xampp\htdocs\amazone/html/upload/save_image
-image_temp_realdir: C:\xampp\htdocs\amazone/html/upload/temp_image
+image_save_realdir: /home/ubuntu/workspace/html/upload/save_image
+image_temp_realdir: /home/ubuntu/workspace/html/upload/temp_image
 
 # realdir::user_data
-user_data_realdir: C:\xampp\htdocs\amazone/html/user_data
+user_data_realdir: /home/ubuntu/workspace/html/user_data
 
 # realdir::block
-block_default_realdir: C:\xampp\htdocs\amazone/src/Eccube/Resource/template/default/Block
-block_realdir: C:\xampp\htdocs\amazone/app/template/default/Block
+block_default_realdir: /home/ubuntu/workspace/src/Eccube/Resource/template/default/Block
+block_realdir: /home/ubuntu/workspace/app/template/default/Block
 
 # realdir::template
-template_default_realdir: C:\xampp\htdocs\amazone/src/Eccube/Resource/template/default
-template_default_html_realdir: C:\xampp\htdocs\amazone/html/template/default
-template_admin_realdir: C:\xampp\htdocs\amazone/src/Eccube/Resource/template/admin
-template_admin_html_realdir: C:\xampp\htdocs\amazone/html/template/admin
-template_realdir: C:\xampp\htdocs\amazone/app/template/default
-template_html_realdir: C:\xampp\htdocs\amazone/html/template/default
-template_temp_realdir: C:\xampp\htdocs\amazone/app/cache/eccube/template
+template_default_realdir: /home/ubuntu/workspace/src/Eccube/Resource/template/default
+template_default_html_realdir: /home/ubuntu/workspace/html/template/default
+template_admin_realdir: /home/ubuntu/workspace/src/Eccube/Resource/template/admin
+template_admin_html_realdir: /home/ubuntu/workspace/html/template/admin
+template_realdir: /home/ubuntu/workspace/app/template/default
+template_html_realdir: /home/ubuntu/workspace/html/template/default
+template_temp_realdir: /home/ubuntu/workspace/app/cache/eccube/template
 
 # realdir::csv
-csv_temp_realdir: C:\xampp\htdocs\amazone/app/cache/eccube/csv
+csv_temp_realdir: /home/ubuntu/workspace/app/cache/eccube/csv
 
 # realdir:plugin
-plugin_realdir: C:\xampp\htdocs\amazone/app/Plugin
-plugin_temp_realdir: C:\xampp\htdocs\amazone/app/cache/plugin
-plugin_html_realdir: C:\xampp\htdocs\amazone/html/plugin
+plugin_realdir: /home/ubuntu/workspace/app/Plugin
+plugin_temp_realdir: /home/ubuntu/workspace/app/cache/plugin
+plugin_html_realdir: /home/ubuntu/workspace/html/plugin
 
 # urlpath
-admin_urlpath: /amazone/html/template/admin
-front_urlpath: /amazone/html/template/default
-image_save_urlpath: /amazone/html/upload/save_image
-image_temp_urlpath: /amazone/html/upload/temp_image
-user_data_urlpath: /amazone/html/user_data
-plugin_urlpath: /amazone/html/plugin
+admin_urlpath: /html/template/admin
+front_urlpath: /html/template/default
+image_save_urlpath: /html/upload/save_image
+image_temp_urlpath: /html/upload/temp_image
+user_data_urlpath: /html/user_data
+plugin_urlpath: /html/plugin

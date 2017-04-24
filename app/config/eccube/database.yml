@@ -1,9 +1,9 @@
 database:
     driver: 'pdo_pgsql'
     host: ''
-    dbname: 'amazone'
+    dbname: 'ubuntu'
     port: ''
-    user: 'postgres'
+    user: 'ubuntu'
     password : 'mailam123'
     charset: utf8
     defaultTableOptions: { collate: utf8_general_ci }
