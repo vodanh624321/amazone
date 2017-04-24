@@ -100,7 +100,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         <li id="search" class="search" style="cursor: pointer;">
                             <input type="radio" name="heart" id="heart1" class="heart" autocomplete="off" {% if heart == 1 or heart is empty %} checked {% endif %} value="1" style="cursor: pointer;">
                             <label for="heart1">表示</label>
-                            <input type="radio" name="heart" id="heart2" class="heart" autocomplete="off" {% if heart == 0 %} checked {% endif %} value="2" style="cursor: pointer;">
+                            <input type="radio" name="heart" id="heart2" class="heart" autocomplete="off" {% if heart == 0 %} checked {% endif %} value="0" style="cursor: pointer;">
                             <label for="heart2">解除</label>
                             {{ form_widget(disp_number_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeDispNumber(this.value);"}}) }}
                         </li>
