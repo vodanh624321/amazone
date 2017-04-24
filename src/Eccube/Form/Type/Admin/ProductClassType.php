@@ -52,7 +52,10 @@ class ProductClassType extends AbstractType
         $builder
             ->add('code', 'text', array(
                 'label' => '商品コード',
-                'required' => false,
+                'required' => true,
+                'constraints' => array(
+                    new Assert\NotBlank(),
+                ),
             ))
             ->add('stock', 'number', array(
                 'label' => '在庫数',
@@ -157,12 +160,31 @@ class ProductClassType extends AbstractType
                 'required' => false,
                 'value' => 1,
             ))
-            ->addEventListener(FormEvents::POST_SUBMIT, function ($event) {
+            ->addEventListener(FormEvents::POST_SUBMIT, function ($event) use ($app) {
                 $form = $event->getForm();
                 $data = $form->getData();
 
                 if (empty($data['stock_unlimited']) && is_null($data['stock'])) {
                     $form['stock_unlimited']->addError(new FormError('在庫数を入力、もしくは在庫無制限を設定してください。'));
+                }
+
+                // 既に登録されているクーポンコードは利用できない
+                if (null !== $data['code']) {
+                    $qb = $app['eccube.repository.product_class']
+                        ->createQueryBuilder('c')
+                        ->select('COUNT(c)')
+                        ->where('c.code = :code')
+                        ->setParameter('code', $data['code']);
+                    // 新規登録時.
+                    if ($data->getId() === null) {
+                        $count = $qb->getQuery()->getSingleScalarResult();
+                    } else {
+                        $qb->andWhere('c.id <> :class_id')->setParameter('class_id', $data->getId());
+                        $count = $qb->getQuery()->getSingleScalarResult();
+                    }
+                    if ($count > 0) {
+                        $form['code']->addError(new FormError("既に登録されている商品コードは利用できない"));
+                    }
                 }
             });
 

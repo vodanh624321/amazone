@@ -11,10 +11,11 @@
 
 namespace Symfony\Component\Form\Tests\Extension\Core\DataTransformer;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class NumberToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
+class NumberToLocalizedStringTransformerTest extends TestCase
 {
     protected function setUp()
     {
@@ -227,7 +228,7 @@ class NumberToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
     public function testReverseTransformWithGrouping($to, $from, $locale)
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this, '4.8.1.1');
 
         \Locale::setDefault($locale);
 
@@ -306,6 +307,8 @@ class NumberToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
             array(1, '123,44', 123.4, NumberToLocalizedStringTransformer::ROUND_DOWN),
             array(1, '-123,45', -123.4, NumberToLocalizedStringTransformer::ROUND_DOWN),
             array(1, '-123,44', -123.4, NumberToLocalizedStringTransformer::ROUND_DOWN),
+            array(2, '37.37', 37.37, NumberToLocalizedStringTransformer::ROUND_DOWN),
+            array(2, '2.01', 2.01, NumberToLocalizedStringTransformer::ROUND_DOWN),
             // round halves (.5) to the next even number
             array(0, '1234,6', 1235, NumberToLocalizedStringTransformer::ROUND_HALF_EVEN),
             array(0, '1234,5', 1234, NumberToLocalizedStringTransformer::ROUND_HALF_EVEN),
@@ -376,7 +379,7 @@ class NumberToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
     public function testDecimalSeparatorMayBeDotIfGroupingSeparatorIsNotDot()
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this, '4.8.1.1');
 
         \Locale::setDefault('fr');
         $transformer = new NumberToLocalizedStringTransformer(null, true);
@@ -396,7 +399,7 @@ class NumberToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
     public function testDecimalSeparatorMayNotBeDotIfGroupingSeparatorIsDot()
     {
         // Since we test against "de_AT", we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this, '4.8.1.1');
 
         \Locale::setDefault('de_AT');
 
@@ -411,7 +414,7 @@ class NumberToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
     public function testDecimalSeparatorMayNotBeDotIfGroupingSeparatorIsDotWithNoGroupSep()
     {
         // Since we test against "de_DE", we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this, '4.8.1.1');
 
         \Locale::setDefault('de_DE');
 
@@ -435,7 +438,7 @@ class NumberToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
     public function testDecimalSeparatorMayBeCommaIfGroupingSeparatorIsNotComma()
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this, '4.8.1.1');
 
         \Locale::setDefault('bg');
         $transformer = new NumberToLocalizedStringTransformer(null, true);
@@ -454,6 +457,8 @@ class NumberToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function testDecimalSeparatorMayNotBeCommaIfGroupingSeparatorIsComma()
     {
+        IntlTestHelper::requireFullIntl($this, '4.8.1.1');
+
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
         $transformer->reverseTransform('1,234,5');
@@ -464,6 +469,8 @@ class NumberToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function testDecimalSeparatorMayNotBeCommaIfGroupingSeparatorIsCommaWithNoGroupSep()
     {
+        IntlTestHelper::requireFullIntl($this, '4.8.1.1');
+
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
         $transformer->reverseTransform('1234,5');

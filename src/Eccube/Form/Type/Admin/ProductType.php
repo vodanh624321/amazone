@@ -82,6 +82,23 @@ class ProductType extends AbstractType
             ->add('description_detail', 'textarea', array(
                 'label' => '商品説明',
             ))
+            ->add('trailer_link', 'text', array(
+                'label' => '動画トレーラーURL',
+            ))
+            ->add('hd_link', 'textarea', array(
+                'label' => '動画',
+            ))
+            ->add('sell_date', 'date', array(
+                'label' => "発売日",
+                'required' => true,
+                'input' => 'datetime',
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd',
+                'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
+                'constraints' => array(
+                    new Assert\NotBlank(),
+                ),
+            ))
             ->add('description_list', 'textarea', array(
                 'label' => '商品説明(一覧)',
                 'required' => false,

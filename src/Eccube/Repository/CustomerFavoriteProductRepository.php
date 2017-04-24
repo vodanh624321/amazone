@@ -49,7 +49,6 @@ class CustomerFavoriteProductRepository extends EntityRepository
             $CustomerFavoriteProduct->setCustomer($Customer);
             $CustomerFavoriteProduct->setProduct($Product);
             $CustomerFavoriteProduct->setDelFlg(Constant::DISABLED);
-
             $em = $this->getEntityManager();
             $em->persist($CustomerFavoriteProduct);
             $em->flush();

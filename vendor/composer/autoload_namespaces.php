@@ -6,8 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'org\\bovigo\\vfs\\' => array($vendorDir . '/mikey179/vfsStream/src/main/php'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Silex\\Provider\\' => array($vendorDir . '/silex/web-profiler'),
+    'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'Pimple' => array($vendorDir . '/pimple/pimple/lib'),
     'Knp\\Component' => array($vendorDir . '/knplabs/knp-components/src'),
     'Knp\\' => array($vendorDir . '/knplabs/console-service-provider'),
@@ -21,10 +23,10 @@ return array(
     'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib'),
     'Doctrine\\Common\\Collections\\' => array($vendorDir . '/doctrine/collections/lib'),
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib'),
-    'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib'),
     'Dflydev\\Silex\\Provider\\DoctrineOrm' => array($vendorDir . '/dflydev/doctrine-orm-service-provider/src'),
     'Dflydev\\Pimple\\Provider\\DoctrineOrm' => array($vendorDir . '/dflydev/doctrine-orm-service-provider/src'),
     'Dflydev\\Cilex\\Provider\\DoctrineOrm' => array($vendorDir . '/dflydev/doctrine-orm-service-provider/src'),
     'Detection' => array($vendorDir . '/mobiledetect/mobiledetectlib/namespaced'),
     'Binfo\\Silex' => array($vendorDir . '/jbinfo/mobile-detect-service-provider/src'),
+    'Behat\\Gherkin' => array($vendorDir . '/behat/gherkin/src'),
 );

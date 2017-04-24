@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 <script>
     $(function() {
         $('#zip-search').click(function() {
-            AjaxZip3.zip2addr('entry[zip][zip01]', 'entry[zip][zip02]', 'entry[address][pref]', 'entry[address][addr01]');
+            AjaxZip3.zip2addr('mypage[zip][zip01]', 'mypage[zip][zip02]', 'mypage[address][pref]', 'mypage[address][addr01]');
         });
     });
 </script>
@@ -97,26 +97,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             <div class="form-group {% if form.password.vars.errors is not empty %}has-error{% endif %}">
                                 {{ form_widget(form.password, { type : 'password'}) }}
                                 {{ form_errors(form.password) }}
-                            </div>
-                        </dd>
-                    </dl>
-                </div>
-                <div class="dl_table not_required">
-                    <dl id="detail_box__birth">
-                        <dt>{{ form_label(form.birth) }}</dt>
-                        <dd>
-                            <div class="form-group form-inline">
-                                {{ form_widget(form.birth) }}
-                                {{ form_errors(form.birth) }}
-                            </div>
-                        </dd>
-                    </dl>
-                    <dl id="detail_box__sex">
-                        <dt>{{ form_label(form.sex) }}</dt>
-                        <dd>
-                            <div class="form-group form-inline">
-                                {{ form_widget(form.sex) }}
-                                {{ form_errors(form.sex) }}
                             </div>
                         </dd>
                     </dl>

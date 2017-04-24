@@ -27,7 +27,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 <link rel="stylesheet" href="{{ app.config.admin_urlpath }}/assets/css/fileupload/jquery.fileupload.css">
 <link rel="stylesheet" href="{{ app.config.admin_urlpath }}/assets/css/fileupload/jquery.fileupload-ui.css">
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-<style>
+<link rel="stylesheet" href="{{ app.config.admin_urlpath }}/assets/css/bootstrap-datetimepicker.min.css">
+    <link href="http://vjs.zencdn.net/5.19.1/video-js.css" rel="stylesheet">
+
+    <style>
     .ui-state-highlight {
         height: 148px;
         border: dashed 1px #ccc;
@@ -43,6 +46,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/fileupload/jquery.fileupload-process.js"></script>
 <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/fileupload/jquery.fileupload-validate.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="{{ app.config.admin_urlpath }}/assets/js/vendor/moment.min.js"></script>
+<script src="{{ app.config.admin_urlpath }}/assets/js/vendor/moment-ja.js"></script>
+<script src="{{ app.config.admin_urlpath }}/assets/js/vendor/bootstrap-datetimepicker.min.js"></script>
+<script src="http://vjs.zencdn.net/5.19.1/video.js"></script>
+
 <script>
 $(function() {
     $("#thumb").sortable({
@@ -174,6 +182,8 @@ $(function() {
     $('#file_upload').on('click', function () {
         $('#{{ form.product_image.vars.id }}').click();
     });
+
+   // $('#sub_detail_box').collapse("hide");
 });
 
 function fnClass(action) {
@@ -238,6 +248,27 @@ function fnClass(action) {
                                 </div>
                             </div>
 
+                            <div id="detail_trailer_video_box" class="form-group">
+                                {{ form_label(form.trailer_link) }}
+                                <div id="detail_trailer_video_box__detail" class="col-sm-9 col-lg-10">
+                                    {{ form_widget(form.trailer_link) }}
+                                    {{ form_errors(form.trailer_link) }}
+                                </div>
+                            </div>
+
+                            <div id="detail_video_box" class="form-group">
+                                {{ form_label(form.hd_link) }}
+                                <div id="detail_trailer_video_box__detail" class="col-sm-9 col-lg-10">
+                                    <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" poster="{{ app.config.image_save_urlpath }}/0411185946_58eca91257e95.jpg " data-setup="{}">
+                                        <source src="{{ app.config.user_data_urlpath }}/video/oceans.mp4" type='video/mp4'>
+                                        <p class="vjs-no-js">
+                                            To view this video please enable JavaScript, and consider upgrading to a web browser that
+                                            <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                                        </p>
+                                    </video>
+                                </div>
+                            </div>
+
                             <div id="detail_description_box" class="form-group">
                                 {{ form_label(form.description_detail) }}
                                 <div id="detail_description_box__detail" class="col-sm-9 col-lg-10">
@@ -283,6 +314,18 @@ function fnClass(action) {
                             </div>
                             {% endif %}
 
+                            <div id="detail_box__sell_date" class="form-group">
+                                {{ form_label(form.sell_date) }}
+                                <div class="col-sm-9 col-lg-10">
+                                    <div class="row">
+                                        <div id="detail_box__unlimited" class="col-xs-12 form-inline">
+                                            {{ form_widget(form.sell_date) }}
+                                            {{ form_errors(form.sell_date) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div id="detail_category_box" class="form-group">
                                 {{ form_label(form.Category) }}
                                 <div class="col-sm-9 col-lg-10">
@@ -321,10 +364,10 @@ function fnClass(action) {
                     </div><!-- /.box -->
 
                     <div id="sub_detail_box" class="box accordion form-horizontal">
-                        <div  id="sub_detail_box__toggle" class="box-header toggle">
+                        <div  id="sub_detail_box__toggle" class="box-header toggle active">
                             <h3 class="box-title">詳細な設定<svg class="cb cb-angle-down icon_down"> <use xlink:href="#cb-angle-down" /></svg></h3>
                         </div><!-- /.box-header -->
-                        <div id="sub_detail_box__body" class="box-body accpanel">
+                        <div id="sub_detail_box__body" class="box-body accpanel" style="display: block;">
 
                             {% if has_class == false %}
                                 {{ form_row(form.class.code) }}

@@ -86,6 +86,7 @@ class FrontControllerProvider implements ControllerProviderInterface
 
         // mypage
         $c->match('/mypage', '\Eccube\Controller\Mypage\MypageController::index')->bind('mypage');
+        $c->match('/mypage/streaming', '\Eccube\Controller\Mypage\MypageController::streaming')->bind('mypage_streaming');
         $c->match('/mypage/login', '\Eccube\Controller\Mypage\MypageController::login')->bind('mypage_login');
         $c->match('/mypage/change', '\Eccube\Controller\Mypage\ChangeController::index')->bind('mypage_change');
         $c->match('/mypage/change_complete', '\Eccube\Controller\Mypage\ChangeController::complete')->bind('mypage_change_complete');
@@ -95,7 +96,9 @@ class FrontControllerProvider implements ControllerProviderInterface
         $c->match('/mypage/delivery/{id}/edit', '\Eccube\Controller\Mypage\DeliveryController::edit')->assert('id', '\d+')->bind('mypage_delivery_edit');
         $c->delete('/mypage/delivery/{id}/delete', '\Eccube\Controller\Mypage\DeliveryController::delete')->assert('id', '\d+')->bind('mypage_delivery_delete');
 
+        $c->match('/mypage/streaming_favorite', '\Eccube\Controller\Mypage\MypageController::streamingFavorite')->bind('streaming_favorite');
         $c->match('/mypage/favorite', '\Eccube\Controller\Mypage\MypageController::favorite')->bind('mypage_favorite');
+        $c->match('/mypage/streaming', '\Eccube\Controller\Mypage\MypageController::streaming')->bind('mypage_streaming');
         $c->delete('/mypage/favorite/{id}/delete', '\Eccube\Controller\Mypage\MypageController::delete')->assert('id', '\d+')->bind('mypage_favorite_delete');
         $c->match('/mypage/history/{id}', '\Eccube\Controller\Mypage\MypageController::history')->bind('mypage_history')->assert('id', '\d+');
         $c->put('/mypage/order/{id}', '\Eccube\Controller\Mypage\MypageController::order')->bind('mypage_order')->assert('id', '\d+');

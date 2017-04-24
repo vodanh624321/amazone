@@ -32,6 +32,18 @@ Eccube\Entity\Product:
             type: text
             nullable: true
             length: 65535
+        hd_link:
+            type: text
+            nullable: true
+            length: 65535
+        sd_link:
+            type: text
+            nullable: true
+            length: 65535
+        trailer_link:
+            type: text
+            nullable: true
+            length: 65535
         free_area:
             type: text
             nullable: true
@@ -42,6 +54,8 @@ Eccube\Entity\Product:
             unsigned: false
             options:
                 default: '0'
+        sell_date:
+            type: datetime
         create_date:
             type: datetime
             nullable: false

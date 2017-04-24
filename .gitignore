@@ -3,6 +3,7 @@
 composer.phar
 /vendor/*
 
+/app/cache/*
 !/app/cache/.gitkeep
 /app/config/eccube/*
 !/app/config/eccube/.gitkeep
@@ -33,3 +34,7 @@ composer.phar
 /reports/*
 .idea
 *.php~
+app/config/
+html/plugin/
+html/upload/temp_image/
+html/user_data/

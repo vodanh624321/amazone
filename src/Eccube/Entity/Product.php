@@ -1015,5 +1015,75 @@ class Product extends \Eccube\Entity\AbstractEntity
         return $this->ProductTag;
     }
 
+    private $hd_link;
+    private $sd_link;
+    private $trailer_link;
+    private $sell_date;
+
+    /**
+     * @return mixed
+     */
+    public function getHdLink()
+    {
+        return $this->hd_link;
+    }
+
+    /**
+     * @param mixed $hd_link
+     */
+    public function setHdLink($hd_link)
+    {
+        $this->hd_link = $hd_link;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSdLink()
+    {
+        return $this->sd_link;
+    }
+
+    /**
+     * @param mixed $sd_link
+     */
+    public function setSdLink($sd_link)
+    {
+        $this->sd_link = $sd_link;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTrailerLink()
+    {
+        return $this->trailer_link;
+    }
+
+    /**
+     * @param mixed $trailer_link
+     */
+    public function setTrailerLink($trailer_link)
+    {
+        $this->trailer_link = $trailer_link;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSellDate()
+    {
+        return $this->sell_date;
+    }
+
+    /**
+     * @param mixed $sell_date
+     */
+    public function setSellDate($sell_date)
+    {
+        $this->sell_date = $sell_date;
+    }
+
+
 
 }

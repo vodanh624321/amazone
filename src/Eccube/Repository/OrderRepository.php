@@ -464,11 +464,54 @@ class OrderRepository extends EntityRepository
     public function getQueryBuilderByCustomer(\Eccube\Entity\Customer $Customer)
     {
         $qb = $this->createQueryBuilder('o')
-            ->where('o.Customer = :Customer')
+            ->leftJoin('o.OrderDetails', 'od')
+            ->leftJoin('od.ProductClass', 'pc')
+            ->leftJoin('pc.ProductType', 'pt')
+            ->Where('o.Customer = :Customer')
+            ->andWhere('pt.id != 2')
             ->setParameter('Customer', $Customer);
 
         // Order By
         $qb->addOrderBy('o.id', 'DESC');
+
+        return $qb;
+    }
+
+    public function getQueryBuilderStreamingVideoBySearchData(\Eccube\Entity\Customer $Customer, $searchData)
+    {
+        $qb = $this->createQueryBuilder('o')
+            ->leftJoin('o.OrderDetails', 'od')
+            ->leftJoin('od.Product', 'p')
+            ->leftJoin('p.ProductClasses', 'pc')
+            ->leftJoin('pc.ProductType', 'pt');
+
+        // name
+        if (isset($searchData['name']) && Str::isNotBlank($searchData['name'])) {
+            $keywords = preg_split('/[\s　]+/u', $searchData['name'], -1, PREG_SPLIT_NO_EMPTY);
+
+            foreach ($keywords as $index => $keyword) {
+                $key = sprintf('keyword%s', $index);
+                $qb
+                    ->andWhere(sprintf('NORMALIZE(p.name) LIKE NORMALIZE(:%s) OR NORMALIZE(p.description_detail) LIKE NORMALIZE(:%s)', $key, $key))
+                    ->setParameter($key, '%' . $keyword . '%');
+            }
+        }
+
+        if (!empty($searchData['heart']) && $searchData['heart'] == 1) {
+            $qb->leftJoin('p.CustomerFavoriteProducts', 'cfp');
+            $qb->andWhere('cfp.Customer = :Customer');
+        }
+
+        $qb ->andWhere('o.Customer = :Customer')
+            ->andWhere('pt.id = 2')
+            ->setParameter('Customer', $Customer);
+
+        // Order By
+        if (!empty($searchData['orderby']) && $searchData['orderby'] == 4) {
+            $qb->orderBy('o.order_date', 'DESC');
+        } else if (!empty($searchData['orderby']) && $searchData['orderby'] == 5) {
+            $qb->orderBy('o.order_date', 'ASC');
+        }
 
         return $qb;
     }
