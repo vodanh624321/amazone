@@ -5,7 +5,7 @@ composer.phar
 
 /app/cache/*
 !/app/cache/.gitkeep
-/app/config/eccube/*
+!/app/config/eccube/*
 !/app/config/eccube/.gitkeep
 /app/log/*
 !/app/log/.gitkeep
@@ -38,4 +38,3 @@ composer.phar
 html/plugin/
 html/upload/temp_image/
 html/user_data/
-vendor/
