@@ -31,6 +31,7 @@ use Eccube\Event\EccubeEvents;
 use Eccube\Event\EventArgs;
 use Eccube\Exception\CartException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MypageController extends AbstractController
@@ -123,7 +124,7 @@ class MypageController extends AbstractController
     }
 
     /**
-     * ストリーミング動画
+     * マイページ
      *
      * @param Application $app
      * @param Request $request
@@ -132,7 +133,22 @@ class MypageController extends AbstractController
     public function streaming(Application $app, Request $request)
     {
         $Customer = $app['user'];
+        // searchForm
+        /* @var $builder \Symfony\Component\Form\FormBuilderInterface */
+        $builder = $app['form.factory']->createNamedBuilder('', 'search_product');
+        $builder->setAttribute('freeze', true);
+        $builder->setAttribute('freeze_display_text', false);
+        if ($request->getMethod() === 'GET') {
+            $builder->setMethod('GET');
+        }
 
+        /* @var $searchForm \Symfony\Component\Form\FormInterface */
+        $searchForm = $builder->getForm();
+        $searchForm->handleRequest($request);
+        // paginator
+        $searchData = $searchForm->getData();
+        $searchData['orderby'] = $request->get("orderby");
+        $searchData['heart'] = $request->get("heart");
         /* @var $softDeleteFilter \Eccube\Doctrine\Filter\SoftDeleteFilter */
         $softDeleteFilter = $app['orm.em']->getFilters()->getFilter('soft_delete');
         $softDeleteFilter->setExcludes(array(
@@ -145,16 +161,34 @@ class MypageController extends AbstractController
             ->enable('incomplete_order_status_hidden');
 
         // paginator
-        $qb = $app['eccube.repository.order']->getQueryBuilderStreamingVideoByCustomer($Customer);
+        $qb = $app['eccube.repository.order']->getQueryBuilderStreamingVideoBySearchData($Customer, $searchData);
+
 
         $pagination = $app['paginator']()->paginate(
             $qb,
-            $request->get('pageno', 1),
-            $app['config']['search_pmax']
+            !empty($searchData['pageno']) ? $searchData['pageno'] : 1,
+            !empty($searchData['disp_number']) ? $searchData['disp_number']->getId() : $app['config']['search_pmax']
         );
+
+        // 表示件数
+        $builder = $app['form.factory']->createNamedBuilder('disp_number', 'product_list_max', null, array(
+            'empty_data' => null,
+            'required' => false,
+            'label' => '表示件数',
+            'allow_extra_fields' => true,
+        ));
+        if ($request->getMethod() === 'GET') {
+            $builder->setMethod('GET');
+        }
+        $dispNumberForm = $builder->getForm();
+        $dispNumberForm->handleRequest($request);
 
         return $app->render('Mypage/streaming.twig', array(
             'pagination' => $pagination,
+            'form' => $searchForm->createView(),
+            'disp_number_form' => $dispNumberForm->createView(),
+            'orderby' => $request->get("orderby"),
+            'heart' => $request->get("heart"),
         ));
     }
 
@@ -307,6 +341,20 @@ class MypageController extends AbstractController
         } else {
             throw new NotFoundHttpException();
         }
+    }
+
+    public function streamingFavorite(Application $app, Request $request)
+    {
+        try {
+            $productId = $request->get("product_id");
+            $Customer = $app->user();
+            $Product = $app['eccube.repository.product']->find($productId);
+            $app['eccube.repository.customer_favorite_product']->addFavorite($Customer, $Product);
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException();
+        }
+
+        return new Response();
     }
 
     /**

@@ -1,9 +1,0 @@
-mail:
-    transport: smtp
-    host: smtp.gmail.com
-    port: 465
-    username: lam.hedspi@gmail.com
-    password: mailam123
-    encryption: ssl
-    auth_mode: login
-    charset_iso_2022_jp: false
