@@ -1,11 +1,11 @@
 !dummy
 !.gitmodule
 composer.phar
-!/vendor/*
+/vendor/*
 
 /app/cache/*
 !/app/cache/.gitkeep
-!/app/config/eccube/*
+/app/config/eccube/*
 !/app/config/eccube/.gitkeep
 /app/log/*
 !/app/log/.gitkeep
@@ -34,7 +34,7 @@ composer.phar
 /reports/*
 .idea
 *.php~
-!app/config/
+app/config/
 html/plugin/
 html/upload/temp_image/
 html/user_data/

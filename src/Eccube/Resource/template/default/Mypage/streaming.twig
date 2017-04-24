@@ -25,7 +25,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% set body_class = 'mypage' %}
 
+{% block stylesheet %}
+    <link href="http://vjs.zencdn.net/5.19.1/video-js.css" rel="stylesheet">
+{% endblock stylesheet %}
+
 {% block javascript %}
+    <script src="http://vjs.zencdn.net/5.19.1/video.js"></script>
     <script>
         // 表示件数を変更
         function fnChangeDispNumber(dispNumber) {
@@ -50,10 +55,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             });
         }
         
+        function fnImageClick(image) {
+            var player = videojs('my-video');
+            var poster = $("#my-video").attr("poster");
+            poster += "/" + image;
+            $('.vjs-poster').css('background-image', "url(" + poster + ")");
+            $('#video_box').show();
+        }
+        
         $(document).ready(function () {
-            $(".heart").click(function () {
-                
+            $(".heart").change(function () {
+                $("#page_navi_top").submit();
             });
+
         });
         // 商品表示BOXの高さを揃える
         $(window).load(function() {
@@ -86,13 +100,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         <li id="search" class="search" style="cursor: pointer;">
                             <input type="radio" name="heart" id="heart1" class="heart" autocomplete="off" {% if heart == 1 or heart is empty %} checked {% endif %} value="1" style="cursor: pointer;">
                             <label for="heart1">表示</label>
-                            <input type="radio" name="heart" id="heart2" class="heart" autocomplete="off" {% if heart == 0 %} checked {% endif %} value="0" style="cursor: pointer;">
+                            <input type="radio" name="heart" id="heart2" class="heart" autocomplete="off" {% if heart == 2 %} checked {% endif %} value="2" style="cursor: pointer;">
                             <label for="heart2">解除</label>
                             {{ form_widget(disp_number_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeDispNumber(this.value);"}}) }}
                         </li>
                     </ul>
                 </div>
             </form>
+        </div>
+
+        <div id="video_box" class="col-sm-9 col-lg-10 col-sm-offset-2" style="display: none;">
+            <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" width="700" height="395" poster="{{ app.config.image_save_urlpath }}" data-setup="{}">
+                <source src="{{ app.config.user_data_urlpath }}/video/oceans.mp4" type='video/mp4'>
+                <p class="vjs-no-js">
+                    To view this video please enable JavaScript, and consider upgrading to a web browser that
+                    <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                </p>
+            </video>
         </div>
 
         <div id="favorite_list_box" class="row">
@@ -113,7 +137,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                 {% endfor %}
                                     <div id="favorite__list--{{ Product.id }}" class="col-sm-3 col-xs-6">
                                         <div id="favorite_list__item--{{ Product.id }}" class="product_item">
-                                            <a href="{{ url('product_detail', {'id': Product.id}) }}">
+                                            <a href="javascript:void(0)" onclick="fnImageClick('{{ Product.main_list_image|no_image_product }}');">
                                                 <div id="favorite_list__image--{{ Product.id }}" class="item_photo">
                                                     <img src="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}" alt="{{ Product.name }}"/>
                                                 </div>
@@ -121,11 +145,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                             <a href="javascript:void(0)" onclick="fnIconClick({{ Product.id }});" id="favorite_product_{{ Product.id }}">
                                                 <button type="button" class="btn_circle"  {% if flag == true %} style="background-color: whitesmoke;" {% endif %}><svg class="cb cb-heart" {% if flag == true %} style="color: red;" {% endif %}><use xlink:href="#cb-heart"></use></svg></button>
                                             </a>
-                                            <a href="{{ url('product_detail', {'id': Product.id}) }}">
+
                                                 <dl id="favorite_list__detail--{{ Product.id }}">
                                                     <dt id="favorite_list__name--{{ Product.id }}" class="item_name" style="height: 22px;"> {{ Product.name }}</dt>
                                                 </dl>
-                                            </a>
+
                                         </div>
                                     </div>
 
