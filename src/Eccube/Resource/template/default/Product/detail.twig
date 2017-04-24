@@ -173,7 +173,9 @@ $(function(){
                     <p id="detail_description_box__item_range_code" class="item_code">商品コード： <span id="item_code_default">
                         {{ Product.code_min }}
                         {% if Product.code_min != Product.code_max %} ～ {{ Product.code_max }}{% endif %}
-                        </span> </p>
+                        </span>
+                        <span class="badge">{{ Product.productType }}</span>
+                    </p>
                     <!--▲商品コード-->
 
                     <!-- ▼関連カテゴリ▼ -->

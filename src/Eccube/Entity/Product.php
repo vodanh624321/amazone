@@ -44,6 +44,7 @@ class Product extends \Eccube\Entity\AbstractEntity
     private $classCategories2 = array();
     private $className1;
     private $className2;
+    private $productType;
 
     /**
      * @return string
@@ -89,6 +90,9 @@ class Product extends \Eccube\Entity\AbstractEntity
                 // product_code
                 $this->codes[] = $ProductClass->getCode();
 
+                //product type
+                $this->productType = $ProductClass->getProductType()->getName();
+
                 if ($i === 0) {
                     if ($ProductClass->getClassCategory1() && $ProductClass->getClassCategory1()->getId()) {
                         $this->className1 = $ProductClass->getClassCategory1()->getClassName()->getName();
@@ -120,6 +124,14 @@ class Product extends \Eccube\Entity\AbstractEntity
     public function isEnable()
     {
         return $this->getStatus()->getId() === \Eccube\Entity\Master\Disp::DISPLAY_SHOW ? true : false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProductType()
+    {
+        return $this->productType;
     }
 
     /**
