@@ -364,7 +364,10 @@ class MypageController extends AbstractController
 
     public function video(Application $app, Request $request)
     {
+        $productId = $request->get("product_id");
+        $Product = $app['eccube.repository.product']->find($productId);
         return $app->render('Mypage/video.twig', array(
+            "Product" => $Product
         ));
     }
 

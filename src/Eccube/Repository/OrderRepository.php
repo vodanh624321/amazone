@@ -496,6 +496,7 @@ class OrderRepository extends EntityRepository
         if (!empty($searchData['heart']) && $searchData['heart'] == 1) {
             $qb->leftJoin('p.CustomerFavoriteProducts', 'cfp');
             $qb->andWhere('cfp.Customer = :Customer');
+            $qb->andWhere('cfp.flag = 2');
         }
 
         $qb ->andWhere('o.Customer = :Customer')
