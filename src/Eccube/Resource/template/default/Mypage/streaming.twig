@@ -66,7 +66,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 }
             });
         }
-        
+
         function fnImageClick(image) {
             $("#modal-image").attr("src", "{{ app.config.image_save_urlpath }}" + "/" + image);
         }
@@ -76,8 +76,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 $("#page_navi_top").submit();
             });
 
-            $('#hd_button').click(function(event) {
-
+            $('#hd_button').click(function() {
+                window.open('{{ url('mypage_video') }}',"WindowName","width=700,height=400");
+                return false;
             });
         });
 
@@ -121,32 +122,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             </form>
         </div>
 
-        <div id="video_box" class="col-sm-9 col-lg-10 col-sm-offset-2" style="display: none;">
-            <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" width="700" height="395" poster="{{ app.config.image_save_urlpath }}" data-setup="{}">
-                <source src="{{ app.config.user_data_urlpath }}/video/oceans.mp4" type='video/mp4'>
-                <p class="vjs-no-js">
-                    To view this video please enable JavaScript, and consider upgrading to a web browser that
-                    <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                </p>
-            </video>
-        </div>
-
         <div id="favorite_list_box" class="row">
             <div id="favorite_list_box__body" class="col-md-12">
-            {% if pagination.totalItemCount > 0 %}
-                <p id="favorite_lst__total_item_count" class="intro"><strong>{{ pagination.totalItemCount }}件</strong>のストリーミング動画があります。</p>
-                <div id="item_list">
-                    <div id="favorite_list__list" class="row no-padding">
-                        {% for Order in pagination %}
-                            {% for OrderDetail in Order.OrderDetails %}
-                                {% set Product = OrderDetail.Product %}
-                                {% set flag = false %}
-                                {% set FavoriteProducts = Order.Customer.CustomerFavoriteProducts %}
-                                {% for Favorite in FavoriteProducts %}
-                                    {% if Favorite.Product.id == Product.id and  Favorite.flag == 2 %}
-                                        {% set flag = true %}
-                                    {% endif %}
-                                {% endfor %}
+                {% if pagination.totalItemCount > 0 %}
+                    <p id="favorite_lst__total_item_count" class="intro"><strong>{{ pagination.totalItemCount }}件</strong>のストリーミング動画があります。</p>
+                    <div id="item_list">
+                        <div id="favorite_list__list" class="row no-padding">
+                            {% for Order in pagination %}
+                                {% for OrderDetail in Order.OrderDetails %}
+                                    {% set Product = OrderDetail.Product %}
+                                    {% set flag = false %}
+                                    {% set FavoriteProducts = Order.Customer.CustomerFavoriteProducts %}
+                                    {% for Favorite in FavoriteProducts %}
+                                        {% if Favorite.Product.id == Product.id and  Favorite.flag == 2 %}
+                                            {% set flag = true %}
+                                        {% endif %}
+                                    {% endfor %}
                                     <div id="favorite__list--{{ Product.id }}" class="col-sm-3 col-xs-6">
                                         <div id="favorite_list__item--{{ Product.id }}" class="product_item">
                                             <a href="javascript:void(0)" onclick="fnImageClick('{{ Product.main_list_image|no_image_product }}');" data-toggle="modal" data-target="#mymodel">
@@ -158,23 +149,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                                 <button type="button" class="btn_circle"  {% if flag == true %} style="background-color: whitesmoke;" {% endif %}><svg class="cb cb-heart" {% if flag == true %} style="color: red;" {% endif %}><use xlink:href="#cb-heart"></use></svg></button>
                                             </a>
 
-                                                <dl id="favorite_list__detail--{{ Product.id }}">
-                                                    <dt id="favorite_list__name--{{ Product.id }}" class="item_name" style="height: 22px;"> {{ Product.name }}</dt>
-                                                </dl>
+                                            <dl id="favorite_list__detail--{{ Product.id }}">
+                                                <dt id="favorite_list__name--{{ Product.id }}" class="item_name" style="height: 22px;"> {{ Product.name }}</dt>
+                                            </dl>
 
                                         </div>
                                     </div>
 
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
+                        </div>
                     </div>
-                </div>
-                <div id="favorite_list__pagination" class="paging">
-                    {% include "pagination.twig" with {'pages': pagination.paginationData} %}
-                </div>
-            {% else %}
-                <p id="favorite_list__not_found_message" class="intro">ストリーミング動画が登録されていません。</p>
-            {% endif %}
+                    <div id="favorite_list__pagination" class="paging">
+                        {% include "pagination.twig" with {'pages': pagination.paginationData} %}
+                    </div>
+                {% else %}
+                    <p id="favorite_list__not_found_message" class="intro">ストリーミング動画が登録されていません。</p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -192,14 +183,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                     <div class="item_photo" style="width: 320px; height: 320px;float: left;">
                         <img src="" id="modal-image"/>
                     </div>
-                    <div style="margin-right: 100px;float: right;margin-bottom: 30px;margin-top: 20px;" id="hd_button">
-                        <button class="btn btn-primary btn-lg" style="width: 250px; height: 60px;">HD画質で再生</button>
+                    <div style="margin-right: 100px;float: right;margin-bottom: 30px;margin-top: 20px;" id="hd_button" href='{{ url('mypage_video') }}'>
+                        <a><button class="btn btn-primary btn-lg" style="width: 250px; height: 60px;">HD画質で再生</button></a>
                     </div>
                     <div style="margin-right: 100px;float: right;margin-bottom: 30px;" id="sd_button">
-                        <button class="btn btn-primary btn-lg"  style="width: 250px; height: 60px;">SD画質で再生</button>
+                        <a><button class="btn btn-primary btn-lg"  style="width: 250px; height: 60px;">SD画質で再生</button></a>
                     </div>
                     <div style="margin-right: 100px;float: right;margin-bottom: 30px;" id="review_button">
-                        <button class="btn btn-primary btn-lg"  style="width: 250px; height: 60px;">レビューする</button>
+                        <a><button class="btn btn-primary btn-lg"  style="width: 250px; height: 60px;">レビューする</button></a>
                     </div>
                 </div>
                 <div class="modal-footer" style="clear:both;">

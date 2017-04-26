@@ -362,6 +362,12 @@ class MypageController extends AbstractController
         return new Response();
     }
 
+    public function video(Application $app, Request $request)
+    {
+        return $app->render('Mypage/video.twig', array(
+        ));
+    }
+
     /**
      * お気に入り商品を削除する.
      *

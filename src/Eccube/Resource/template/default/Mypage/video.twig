@@ -1,0 +1,49 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+
+{% block stylesheet %}
+    <link href="http://vjs.zencdn.net/5.19.1/video-js.css" rel="stylesheet">
+{% endblock stylesheet %}
+
+{% block javascript %}
+    <script src="http://vjs.zencdn.net/5.19.1/video.js"></script>
+    <script>
+        $(function () {
+           $("#header").hide();
+           $("#footer").hide();
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+<div id="video_box">
+    <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" width="680" height="375" poster="/amazone/html/upload/save_image/0701121841_55935c114e715.jpeg" data-setup="{}">
+        <source src="/amazone/html/user_data/video/oceans.mp4" type='video/mp4'>
+        <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+        </p>
+    </video>
+</div>
+{% endblock %}
+
