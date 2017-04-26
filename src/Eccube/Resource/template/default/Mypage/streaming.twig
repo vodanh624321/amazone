@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% set body_class = 'mypage' %}
 
+{% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
+
 {% block stylesheet %}
     <link href="http://vjs.zencdn.net/5.19.1/video-js.css" rel="stylesheet">
 {% endblock stylesheet %}
@@ -38,12 +40,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         }
 
         function  fnIconClick(productId) {
-            $("#favorite_product_" + productId + " .btn_circle").css("backgroundColor", "whitesmoke");
-            $("#favorite_product_" + productId + " .btn_circle .cb-heart").css("color", "red");
+            var className =  $("#favorite_product_" + productId).attr("icon");
+            if (className == 'addIcon') {
+                $("#favorite_product_" + productId + " .btn_circle").css("backgroundColor", "whitesmoke");
+                $("#favorite_product_" + productId + " .btn_circle .cb-heart").css("color", "red");
+                $("#favorite_product_" + productId).attr("icon", "removeIcon");
+            } else {
+                $("#favorite_product_" + productId + " .btn_circle").css("backgroundColor", "#B8BEC4");
+                $("#favorite_product_" + productId + " .btn_circle .cb-heart").css("color", "#fff");
+                $("#favorite_product_" + productId).attr("icon", "addIcon");
+            }
+
             $.ajax({
                 type: 'POST',
                 data: {
-                    'product_id' : productId
+                    'product_id' : productId,
+                    'mode' : className
                 },
                 url: '{{ url('streaming_favorite') }}',
                 success: function(data) {
@@ -56,19 +68,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         }
         
         function fnImageClick(image) {
-            var player = videojs('my-video');
-            var poster = $("#my-video").attr("poster");
-            poster += "/" + image;
-            $('.vjs-poster').css('background-image', "url(" + poster + ")");
-            $('#video_box').show();
+            $("#modal-image").attr("src", "{{ app.config.image_save_urlpath }}" + "/" + image);
         }
-        
-        $(document).ready(function () {
+
+        $(function(){
             $(".heart").change(function () {
                 $("#page_navi_top").submit();
             });
 
+            $('#hd_button').click(function(event) {
+
+            });
         });
+
         // 商品表示BOXの高さを揃える
         $(window).load(function() {
             $('.product_item').matchHeight();
@@ -131,18 +143,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                 {% set flag = false %}
                                 {% set FavoriteProducts = Order.Customer.CustomerFavoriteProducts %}
                                 {% for Favorite in FavoriteProducts %}
-                                    {% if Favorite.Product.id == Product.id %}
+                                    {% if Favorite.Product.id == Product.id and  Favorite.flag == 2 %}
                                         {% set flag = true %}
                                     {% endif %}
                                 {% endfor %}
                                     <div id="favorite__list--{{ Product.id }}" class="col-sm-3 col-xs-6">
                                         <div id="favorite_list__item--{{ Product.id }}" class="product_item">
-                                            <a href="javascript:void(0)" onclick="fnImageClick('{{ Product.main_list_image|no_image_product }}');">
+                                            <a href="javascript:void(0)" onclick="fnImageClick('{{ Product.main_list_image|no_image_product }}');" data-toggle="modal" data-target="#mymodel">
                                                 <div id="favorite_list__image--{{ Product.id }}" class="item_photo">
                                                     <img src="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}" alt="{{ Product.name }}"/>
                                                 </div>
                                             </a>
-                                            <a href="javascript:void(0)" onclick="fnIconClick({{ Product.id }});" id="favorite_product_{{ Product.id }}">
+                                            <a href="javascript:void(0)" onclick="fnIconClick({{ Product.id }});" id="favorite_product_{{ Product.id }}" {% if flag == true %} icon="removeIcon" {% else %} icon="addIcon" {% endif %}>
                                                 <button type="button" class="btn_circle"  {% if flag == true %} style="background-color: whitesmoke;" {% endif %}><svg class="cb cb-heart" {% if flag == true %} style="color: red;" {% endif %}><use xlink:href="#cb-heart"></use></svg></button>
                                             </a>
 
@@ -163,6 +175,36 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             {% else %}
                 <p id="favorite_list__not_found_message" class="intro">ストリーミング動画が登録されていません。</p>
             {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block modal %}
+    <div class="modal fade" id="mymodel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+        <div class="modal-dialog" role="document" style="width: 800px;">
+            <div class="modal-content" style="background-color: white !important;">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">クラフトノート</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="item_photo" style="width: 320px; height: 320px;float: left;">
+                        <img src="" id="modal-image"/>
+                    </div>
+                    <div style="margin-right: 100px;float: right;margin-bottom: 30px;margin-top: 20px;" id="hd_button">
+                        <button class="btn btn-primary btn-lg" style="width: 250px; height: 60px;">HD画質で再生</button>
+                    </div>
+                    <div style="margin-right: 100px;float: right;margin-bottom: 30px;" id="sd_button">
+                        <button class="btn btn-primary btn-lg"  style="width: 250px; height: 60px;">SD画質で再生</button>
+                    </div>
+                    <div style="margin-right: 100px;float: right;margin-bottom: 30px;" id="review_button">
+                        <button class="btn btn-primary btn-lg"  style="width: 250px; height: 60px;">レビューする</button>
+                    </div>
+                </div>
+                <div class="modal-footer" style="clear:both;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

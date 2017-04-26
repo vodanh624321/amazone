@@ -18,6 +18,12 @@ Eccube\Entity\CustomerFavoriteProduct:
         update_date:
             type: datetime
             nullable: false
+        flag:
+            type: smallint
+            nullable: true
+            unsigned: false
+            options:
+                 default: '0'
         del_flg:
             type: smallint
             nullable: false

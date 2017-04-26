@@ -347,9 +347,14 @@ class MypageController extends AbstractController
     {
         try {
             $productId = $request->get("product_id");
+            $mode = $request->get("mode");
             $Customer = $app->user();
             $Product = $app['eccube.repository.product']->find($productId);
-            $app['eccube.repository.customer_favorite_product']->addFavorite($Customer, $Product);
+            if ($mode == "addIcon") {
+                $app['eccube.repository.customer_favorite_product']->addFavorite($Customer, $Product, 2);
+            } else {
+                $app['eccube.repository.customer_favorite_product']->deleteFavorite($Customer, $Product);
+            }
         } catch (\Exception $e) {
             throw new NotFoundHttpException();
         }

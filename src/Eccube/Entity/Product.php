@@ -1031,6 +1031,7 @@ class Product extends \Eccube\Entity\AbstractEntity
     private $sd_link;
     private $trailer_link;
     private $sell_date;
+    private $poster;
 
     /**
      * @return mixed

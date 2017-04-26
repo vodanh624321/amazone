@@ -48,6 +48,7 @@ class CustomerFavoriteProduct extends \Eccube\Entity\AbstractEntity
      * @var integer
      */
     private $del_flg;
+    private $flag;
 
     /**
      * @var \Eccube\Entity\Customer
@@ -182,5 +183,21 @@ class CustomerFavoriteProduct extends \Eccube\Entity\AbstractEntity
     public function getProduct()
     {
         return $this->Product;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFlag()
+    {
+        return $this->flag;
+    }
+
+    /**
+     * @param mixed $flag
+     */
+    public function setFlag($flag)
+    {
+        $this->flag = $flag;
     }
 }
