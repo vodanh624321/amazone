@@ -71,6 +71,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             $("#modal-image").attr("src", "{{ app.config.image_save_urlpath }}" + "/" + image);
             $("#hd_button").attr("product_id", productId);
             $("#sd_button").attr("product_id", productId);
+            var category = $("#category_box"+productId).html();
+            $("#relative_category_box").append(category);
         }
 
         $(function(){
@@ -165,6 +167,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                         </div>
                                     </div>
 
+                                    <div id="category_box{{ Product.id }}" class="relative_cat" style="clear:both;display: none">
+                                        <p>関連カテゴリ</p>
+                                        {% for ProductCategory in Product.ProductCategories %}
+                                            <ol id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.index }}">
+                                                {% for Category in ProductCategory.Category.path %}
+                                                    <li><a id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.parent.loop.index }}_{{ Category.id }}" href="{{ url('product_list') }}?category_id={{ Category.id }}">{{ Category.name }}</a></li>
+                                                {% endfor %}
+                                            </ol>
+                                        {% endfor %}
+                                    </div>
+
                                 {% endfor %}
                             {% endfor %}
                         </div>
@@ -201,6 +214,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                     <div style="margin-right: 100px;float: right;margin-bottom: 30px;" id="review_button" product_id="">
                         <a><button class="btn btn-primary btn-lg"  style="width: 250px; height: 60px;">レビューする</button></a>
                     </div>
+                    <!-- ▼関連カテゴリ▼ -->
+                    <div id="relative_category_box" class="relative_cat" style="clear:both;">
+
+                    </div>
+                    <!-- ▲関連カテゴリ▲ -->
                 </div>
                 <div class="modal-footer" style="clear:both;">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
