@@ -23,10 +23,47 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% block stylesheet %}
     <link href="http://vjs.zencdn.net/5.19.1/video-js.css" rel="stylesheet">
+    <link href="{{ app.config.front_urlpath }}/css/videojs-resolution-switcher.css" rel="stylesheet">
+
 {% endblock stylesheet %}
 
 {% block javascript %}
     <script src="http://vjs.zencdn.net/5.19.1/video.js"></script>
+    <script src="{{ app.config.front_urlpath }}/js/videojs-resolution-switcher.js"></script>
+    <script>
+        // fire up the plugin
+        videojs('video', {
+            controls: true,
+            muted: false,
+            plugins: {
+                videoJsResolutionSwitcher: {
+                    ui: true,
+                    default: 'high', // Default resolution [{Number}, 'low', 'high'],
+                    dynamicLabel: true // Display dynamic labels or gear symbol
+                }
+            }
+        }, function(){
+            var player = this;
+            window.player = player;
+            player.updateSrc([
+                {
+                    src: '{{ app.config.user_data_urlpath }}/video/{{ Product.sd_link }}',
+                    type: 'video/mp4',
+                    label: 'SD',
+                    res: 360
+                },
+                {
+                    src: '{{ app.config.user_data_urlpath }}/video/{{ Product.hd_link }}',
+                    type: 'video/mp4',
+                    label: 'HD',
+                    res: 720
+                }
+            ]);
+            player.on('resolutionchange', function(){
+                console.info('Source changed to %s', player.src())
+            })
+        })
+    </script>
     <script>
         $(function () {
            $("#header").hide();
@@ -37,12 +74,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% block main %}
 <div id="video_box">
-    <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" width="680" height="375" poster="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}" data-setup="{}">
-        <source src="{{ app.config.user_data_urlpath }}/video/{{ Product.hd_link }}" type='video/mp4'>
-        <p class="vjs-no-js">
-            To view this video please enable JavaScript, and consider upgrading to a web browser that
-            <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-        </p>
+    <video id="video" class="video-js vjs-default-skin" controls preload="auto" width="680" height="375" poster="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}" data-setup="{}">
     </video>
 </div>
 {% endblock %}
