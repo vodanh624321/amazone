@@ -63,7 +63,9 @@ $(function(){
                 <div id="detail_list_box__body" class="cart_item table">
                     <div id="detail_list_box__list" class="tbody">
                         {% set remessage = '' %}
+                        {% set product_type = 1 %}
                         {% for OrderDetail in Order.OrderDetails %}
+                            {% set product_type = OrderDetail.ProductClass.ProductType.id %}
                             <div id="detail_list__item_box--{{ OrderDetail.id }}" class="item_box tr">
                                 <div id="detail_list__item--{{ OrderDetail.id }}" class="td table">
                                     <div id="detail_list__image--{{ OrderDetail.id }}" class="item_photo">
@@ -120,60 +122,62 @@ $(function(){
                     </div>
                 </div><!--/cart_item-->
 
-                <h2 class="heading02">配送情報</h2>
-                {% set OrderDetail = Order.OrderDetails.0 %}
-                {% for Shipping in Order.Shippings %}
-                    <div id="shipping_list--{{ Shipping.id }}" class="column is-edit">
-                        <h3>お届け先{% if Order.multiple %}({{ loop.index }}){% endif %}</h3>
-                        <div id="shipping_list__body--{{ Shipping.id }}" class="cart_item table">
-                            <div id="shipping_list__list--{{ Shipping.id }}" class="tbody">
-                                {% for shipmentItem in Shipping.shipmentItems %}
-                                    <div id="shipping_list__shipment--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_box tr">
-                                        <div id="shipping_list__shipment_item--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="td table">
-                                            <div id="shipping_list__shipment_image--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_photo">
-                                                {% if shipmentItem.product is null %}
-                                                    <img src="{{ app.config.image_save_urlpath }}/{{ ''|no_image_product }}" />
-                                                {% else %}
-                                                    {% if shipmentItem.product.enable %}
-                                                        <img src="{{ app.config.image_save_urlpath }}/{{ shipmentItem.product.MainListImage|no_image_product }}" alt="{{ shipmentItem.productName }}" />
-                                                    {% else %}
+                {% if product_type != 2  %}
+                    <h2 class="heading02">配送情報</h2>
+                    {% set OrderDetail = Order.OrderDetails.0 %}
+                    {% for Shipping in Order.Shippings %}
+                        <div id="shipping_list--{{ Shipping.id }}" class="column is-edit">
+                            <h3>お届け先{% if Order.multiple %}({{ loop.index }}){% endif %}</h3>
+                            <div id="shipping_list__body--{{ Shipping.id }}" class="cart_item table">
+                                <div id="shipping_list__list--{{ Shipping.id }}" class="tbody">
+                                    {% for shipmentItem in Shipping.shipmentItems %}
+                                        <div id="shipping_list__shipment--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_box tr">
+                                            <div id="shipping_list__shipment_item--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="td table">
+                                                <div id="shipping_list__shipment_image--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_photo">
+                                                    {% if shipmentItem.product is null %}
                                                         <img src="{{ app.config.image_save_urlpath }}/{{ ''|no_image_product }}" />
+                                                    {% else %}
+                                                        {% if shipmentItem.product.enable %}
+                                                            <img src="{{ app.config.image_save_urlpath }}/{{ shipmentItem.product.MainListImage|no_image_product }}" alt="{{ shipmentItem.productName }}" />
+                                                        {% else %}
+                                                            <img src="{{ app.config.image_save_urlpath }}/{{ ''|no_image_product }}" />
+                                                        {% endif %}
                                                     {% endif %}
-                                                {% endif %}
+                                                </div>
+                                                <dl id="shipping_list__shipment_detail--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_detail">
+                                                    <dt id="shipping_list__shipment_product_name--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_name text-default">
+                                                        {{ shipmentItem.productName }} ×{{ shipmentItem.quantity }}
+                                                    </dt>
+                                                    <dd id="shipping_list__shipment_class_category--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_pattern small">
+                                                        {% if shipmentItem.productClass.classCategory1 %}
+                                                            {{ shipmentItem.productClass.classCategory1.className }}：{{ shipmentItem.productClass.classCategory1 }}
+                                                        {% endif %}
+                                                        {% if shipmentItem.productClass.classCategory2 %}
+                                                            <br>{{ shipmentItem.productClass.classCategory2.className }}：{{ shipmentItem.productClass.classCategory2 }}
+                                                        {% endif %}
+                                                    </dd>
+                                                </dl>
                                             </div>
-                                            <dl id="shipping_list__shipment_detail--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_detail">
-                                                <dt id="shipping_list__shipment_product_name--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_name text-default">
-                                                    {{ shipmentItem.productName }} ×{{ shipmentItem.quantity }}
-                                                </dt>
-                                                <dd id="shipping_list__shipment_class_category--{{ Shipping.id }}_{{ shipmentItem.product.id }}" class="item_pattern small">
-                                                    {% if shipmentItem.productClass.classCategory1 %}
-                                                        {{ shipmentItem.productClass.classCategory1.className }}：{{ shipmentItem.productClass.classCategory1 }}
-                                                    {% endif %}
-                                                    {% if shipmentItem.productClass.classCategory2 %}
-                                                        <br>{{ shipmentItem.productClass.classCategory2.className }}：{{ shipmentItem.productClass.classCategory2 }}
-                                                    {% endif %}
-                                                </dd>
-                                            </dl>
-                                        </div>
-                                    </div><!--/item_box-->
-                                {% endfor %}
+                                        </div><!--/item_box-->
+                                    {% endfor %}
+                                </div>
                             </div>
-                        </div>
 
-                        <p id="shipping_list__address--{{ Shipping.id }}" class="address">
-                            {{ Shipping.name01 }}&nbsp;{{ Shipping.name02 }}&nbsp;
-                            ({{ Shipping.kana01 }}&nbsp;{{ Shipping.kana02 }})&nbsp;様<br>
-                            〒{{ Shipping.zip01 }}-{{ Shipping.zip02 }}　{{ Shipping.Pref }}{{ Shipping.addr01 }}{{ Shipping.addr02 }}<br>
-                            {{ Shipping.tel01 }}-{{ Shipping.tel02 }}-{{ Shipping.tel03 }}
-                        </p>
-                        <p id="shipping_list__delivery--{{ Shipping.id }}">
-                            配送方法：　{{ Shipping.shipping_delivery_name }}{{ Shipping.shipping_delivery_fee ? '（＋' ~ Shipping.shipping_delivery_fee|price ~ '）' : '' }}<br>
-                            お届け日：　{{ Shipping.shipping_delivery_date|date_format|default('指定なし') }}<br>
-                            お届け時間：　{{ Shipping.shipping_delivery_time|default('指定なし') }}
-                        </p>
-                    </div>
-                    {% if loop.last == false%}<hr>{% endif %}
-                {% endfor %}
+                            <p id="shipping_list__address--{{ Shipping.id }}" class="address">
+                                {{ Shipping.name01 }}&nbsp;{{ Shipping.name02 }}&nbsp;
+                                ({{ Shipping.kana01 }}&nbsp;{{ Shipping.kana02 }})&nbsp;様<br>
+                                〒{{ Shipping.zip01 }}-{{ Shipping.zip02 }}　{{ Shipping.Pref }}{{ Shipping.addr01 }}{{ Shipping.addr02 }}<br>
+                                {{ Shipping.tel01 }}-{{ Shipping.tel02 }}-{{ Shipping.tel03 }}
+                            </p>
+                            <p id="shipping_list__delivery--{{ Shipping.id }}">
+                                配送方法：　{{ Shipping.shipping_delivery_name }}{{ Shipping.shipping_delivery_fee ? '（＋' ~ Shipping.shipping_delivery_fee|price ~ '）' : '' }}<br>
+                                お届け日：　{{ Shipping.shipping_delivery_date|date_format|default('指定なし') }}<br>
+                                お届け時間：　{{ Shipping.shipping_delivery_time|default('指定なし') }}
+                            </p>
+                        </div>
+                        {% if loop.last == false%}<hr>{% endif %}
+                    {% endfor %}
+                {% endif %}
                 <h2 class="heading02">お支払方法</h2>
                 <div id="detail_box__payment_method" class="column">
                     <p>
@@ -237,9 +241,11 @@ $(function(){
                         <p id="summary_box__payment_total" class="total_price">
                             合計 <strong class="text-primary">{{ Order.payment_total|price }}<span class="small">税込</span></strong>
                         </p>
-                        <p id="summary_box__reorder_button">
-                            <a href="{{ url('mypage_order', {'id': Order.id }) }}" class="btn btn-primary btn-block" {{ csrf_token_for_anchor() }} data-method="put" data-confirm="false">再注文する</a>
-                        </p>
+                        {% if product_type != 2 %}
+                            <p id="summary_box__reorder_button">
+                                <a href="{{ url('mypage_order', {'id': Order.id }) }}" class="btn btn-primary btn-block" {{ csrf_token_for_anchor() }} data-method="put" data-confirm="false">再注文する</a>
+                            </p>
+                        {% endif %}
                     </div>
                     {% if remessage %}
                         <p id="summary_box__message" class="text-danger">

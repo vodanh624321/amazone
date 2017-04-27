@@ -40,7 +40,7 @@ class CustomerFavoriteProductRepository extends EntityRepository
      * @param \Eccube\Entity\Customer $Customer
      * @param \Eccube\Entity\Product  $Product
      */
-    public function addFavorite(\Eccube\Entity\Customer $Customer, \Eccube\Entity\Product $Product)
+    public function addFavorite(\Eccube\Entity\Customer $Customer, \Eccube\Entity\Product $Product, $flag = 1)
     {
         if ($this->isFavorite($Customer, $Product)) {
             return;
@@ -48,6 +48,7 @@ class CustomerFavoriteProductRepository extends EntityRepository
             $CustomerFavoriteProduct = new \Eccube\Entity\CustomerFavoriteProduct();
             $CustomerFavoriteProduct->setCustomer($Customer);
             $CustomerFavoriteProduct->setProduct($Product);
+            $CustomerFavoriteProduct->setFlag($flag);
             $CustomerFavoriteProduct->setDelFlg(Constant::DISABLED);
             $em = $this->getEntityManager();
             $em->persist($CustomerFavoriteProduct);
@@ -109,13 +110,15 @@ class CustomerFavoriteProductRepository extends EntityRepository
      * @param  \Eccube\Entity\Customer $Customer
      * @return QueryBuilder
      */
-    public function getQueryBuilderByCustomer(\Eccube\Entity\Customer $Customer)
+    public function getQueryBuilderByCustomer(\Eccube\Entity\Customer $Customer, $flag = 1)
     {
         $qb = $this->createQueryBuilder('cfp')
             ->select('cfp, p')
             ->innerJoin('cfp.Product', 'p')
             ->where('cfp.Customer = :Customer AND p.Status = 1')
-            ->setParameter('Customer', $Customer);
+            ->andWhere('cfp.flag = :flag')
+            ->setParameter('Customer', $Customer)
+            ->setParameter('flag', $flag);
 
         // Order By
         $qb->addOrderBy('cfp.create_date', 'DESC');

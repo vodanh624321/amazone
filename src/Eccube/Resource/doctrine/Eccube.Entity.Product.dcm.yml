@@ -36,6 +36,10 @@ Eccube\Entity\Product:
             type: text
             nullable: true
             length: 65535
+        poster:
+            type: text
+            nullable: true
+            length: 65535
         sd_link:
             type: text
             nullable: true

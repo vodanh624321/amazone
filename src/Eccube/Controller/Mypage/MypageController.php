@@ -347,14 +347,37 @@ class MypageController extends AbstractController
     {
         try {
             $productId = $request->get("product_id");
+            $mode = $request->get("mode");
             $Customer = $app->user();
             $Product = $app['eccube.repository.product']->find($productId);
-            $app['eccube.repository.customer_favorite_product']->addFavorite($Customer, $Product);
+            if ($mode == "addIcon") {
+                $app['eccube.repository.customer_favorite_product']->addFavorite($Customer, $Product, 2);
+            } else {
+                $app['eccube.repository.customer_favorite_product']->deleteFavorite($Customer, $Product);
+            }
         } catch (\Exception $e) {
             throw new NotFoundHttpException();
         }
 
         return new Response();
+    }
+
+    public function video(Application $app, Request $request)
+    {
+        $productId = $request->get("product_id");
+        $Product = $app['eccube.repository.product']->find($productId);
+        return $app->render('Mypage/video.twig', array(
+            "Product" => $Product
+        ));
+    }
+
+    public function videosd(Application $app, Request $request)
+    {
+        $productId = $request->get("product_id");
+        $Product = $app['eccube.repository.product']->find($productId);
+        return $app->render('Mypage/video_sd.twig', array(
+            "Product" => $Product
+        ));
     }
 
     /**

@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% set body_class = 'mypage' %}
 
+{% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
+
 {% block stylesheet %}
     <link href="http://vjs.zencdn.net/5.19.1/video-js.css" rel="stylesheet">
 {% endblock stylesheet %}
@@ -38,12 +40,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         }
 
         function  fnIconClick(productId) {
-            $("#favorite_product_" + productId + " .btn_circle").css("backgroundColor", "whitesmoke");
-            $("#favorite_product_" + productId + " .btn_circle .cb-heart").css("color", "red");
+            var className =  $("#favorite_product_" + productId).attr("icon");
+            if (className == 'addIcon') {
+                $("#favorite_product_" + productId + " .btn_circle").css("backgroundColor", "whitesmoke");
+                $("#favorite_product_" + productId + " .btn_circle .cb-heart").css("color", "red");
+                $("#favorite_product_" + productId).attr("icon", "removeIcon");
+            } else {
+                $("#favorite_product_" + productId + " .btn_circle").css("backgroundColor", "#B8BEC4");
+                $("#favorite_product_" + productId + " .btn_circle .cb-heart").css("color", "#fff");
+                $("#favorite_product_" + productId).attr("icon", "addIcon");
+            }
+
             $.ajax({
                 type: 'POST',
                 data: {
-                    'product_id' : productId
+                    'product_id' : productId,
+                    'mode' : className
                 },
                 url: '{{ url('streaming_favorite') }}',
                 success: function(data) {
@@ -54,21 +66,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 }
             });
         }
-        
-        function fnImageClick(image) {
-            var player = videojs('my-video');
-            var poster = $("#my-video").attr("poster");
-            poster += "/" + image;
-            $('.vjs-poster').css('background-image', "url(" + poster + ")");
-            $('#video_box').show();
+
+        function fnImageClick(image, productId) {
+            $("#modal-image").attr("src", "{{ app.config.image_save_urlpath }}" + "/" + image);
+            $("#hd_button").attr("product_id", productId);
+            $("#sd_button").attr("product_id", productId);
+            var category = $("#category_box"+productId).html();
+            $("#relative_category_box").append(category);
         }
-        
-        $(document).ready(function () {
+
+        $(function(){
             $(".heart").change(function () {
                 $("#page_navi_top").submit();
             });
 
+            $('#hd_button').click(function() {
+                var product_id = $(this).attr("product_id");
+                window.open('{{ url('mypage_video') }}?product_id=' + product_id,"WindowName","width=700,height=400");
+                return false;
+            });
+
+            $('#sd_button').click(function() {
+                var product_id = $(this).attr("product_id");
+                window.open('{{ url('mypage_video_sd') }}?product_id=' + product_id,"WindowName","width=700,height=400");
+                return false;
+            });
         });
+
         // 商品表示BOXの高さを揃える
         $(window).load(function() {
             $('.product_item').matchHeight();
@@ -109,60 +133,96 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             </form>
         </div>
 
-        <div id="video_box" class="col-sm-9 col-lg-10 col-sm-offset-2" style="display: none;">
-            <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" width="700" height="395" poster="{{ app.config.image_save_urlpath }}" data-setup="{}">
-                <source src="{{ app.config.user_data_urlpath }}/video/oceans.mp4" type='video/mp4'>
-                <p class="vjs-no-js">
-                    To view this video please enable JavaScript, and consider upgrading to a web browser that
-                    <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                </p>
-            </video>
-        </div>
-
         <div id="favorite_list_box" class="row">
             <div id="favorite_list_box__body" class="col-md-12">
-            {% if pagination.totalItemCount > 0 %}
-                <p id="favorite_lst__total_item_count" class="intro"><strong>{{ pagination.totalItemCount }}件</strong>のストリーミング動画があります。</p>
-                <div id="item_list">
-                    <div id="favorite_list__list" class="row no-padding">
-                        {% for Order in pagination %}
-                            {% for OrderDetail in Order.OrderDetails %}
-                                {% set Product = OrderDetail.Product %}
-                                {% set flag = false %}
-                                {% set FavoriteProducts = Order.Customer.CustomerFavoriteProducts %}
-                                {% for Favorite in FavoriteProducts %}
-                                    {% if Favorite.Product.id == Product.id %}
-                                        {% set flag = true %}
-                                    {% endif %}
-                                {% endfor %}
+                {% if pagination.totalItemCount > 0 %}
+                    <p id="favorite_lst__total_item_count" class="intro"><strong>{{ pagination.totalItemCount }}件</strong>のストリーミング動画があります。</p>
+                    <div id="item_list">
+                        <div id="favorite_list__list" class="row no-padding">
+                            {% for Order in pagination %}
+                                {% for OrderDetail in Order.OrderDetails %}
+                                    {% set Product = OrderDetail.Product %}
+                                    {% set flag = false %}
+                                    {% set FavoriteProducts = Order.Customer.CustomerFavoriteProducts %}
+                                    {% for Favorite in FavoriteProducts %}
+                                        {% if Favorite.Product.id == Product.id and  Favorite.flag == 2 %}
+                                            {% set flag = true %}
+                                        {% endif %}
+                                    {% endfor %}
                                     <div id="favorite__list--{{ Product.id }}" class="col-sm-3 col-xs-6">
                                         <div id="favorite_list__item--{{ Product.id }}" class="product_item">
-                                            <a href="javascript:void(0)" onclick="fnImageClick('{{ Product.main_list_image|no_image_product }}');">
+                                            <a href="javascript:void(0)" onclick="fnImageClick('{{ Product.main_list_image|no_image_product }}', {{ Product.id }});" data-toggle="modal" data-target="#mymodel">
                                                 <div id="favorite_list__image--{{ Product.id }}" class="item_photo">
                                                     <img src="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}" alt="{{ Product.name }}"/>
                                                 </div>
                                             </a>
-                                            <a href="javascript:void(0)" onclick="fnIconClick({{ Product.id }});" id="favorite_product_{{ Product.id }}">
+                                            <a href="javascript:void(0)" onclick="fnIconClick({{ Product.id }});" id="favorite_product_{{ Product.id }}" {% if flag == true %} icon="removeIcon" {% else %} icon="addIcon" {% endif %}>
                                                 <button type="button" class="btn_circle"  {% if flag == true %} style="background-color: whitesmoke;" {% endif %}><svg class="cb cb-heart" {% if flag == true %} style="color: red;" {% endif %}><use xlink:href="#cb-heart"></use></svg></button>
                                             </a>
 
-                                                <dl id="favorite_list__detail--{{ Product.id }}">
-                                                    <dt id="favorite_list__name--{{ Product.id }}" class="item_name" style="height: 22px;"> {{ Product.name }}</dt>
-                                                </dl>
+                                            <dl id="favorite_list__detail--{{ Product.id }}">
+                                                <dt id="favorite_list__name--{{ Product.id }}" class="item_name" style="height: 22px;"> {{ Product.name }}</dt>
+                                            </dl>
 
                                         </div>
                                     </div>
 
+                                    <div id="category_box{{ Product.id }}" class="relative_cat" style="clear:both;display: none">
+                                        <p>関連カテゴリ</p>
+                                        {% for ProductCategory in Product.ProductCategories %}
+                                            <ol id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.index }}">
+                                                {% for Category in ProductCategory.Category.path %}
+                                                    <li><a id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.parent.loop.index }}_{{ Category.id }}" href="{{ url('product_list') }}?category_id={{ Category.id }}">{{ Category.name }}</a></li>
+                                                {% endfor %}
+                                            </ol>
+                                        {% endfor %}
+                                    </div>
+
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
+                        </div>
                     </div>
+                    <div id="favorite_list__pagination" class="paging">
+                        {% include "pagination.twig" with {'pages': pagination.paginationData} %}
+                    </div>
+                {% else %}
+                    <p id="favorite_list__not_found_message" class="intro">ストリーミング動画が登録されていません。</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block modal %}
+    <div class="modal fade" id="mymodel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+        <div class="modal-dialog" role="document" style="width: 800px;">
+            <div class="modal-content" style="background-color: white !important;">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">クラフトノート</h4>
                 </div>
-                <div id="favorite_list__pagination" class="paging">
-                    {% include "pagination.twig" with {'pages': pagination.paginationData} %}
+                <div class="modal-body">
+                    <div class="item_photo" style="width: 320px; height: 320px;float: left;">
+                        <img src="" id="modal-image"/>
+                    </div>
+                    <div style="margin-right: 100px;float: right;margin-bottom: 30px;margin-top: 20px;" id="hd_button" href='{{ url('mypage_video') }}' product_id="">
+                        <a><button class="btn btn-primary btn-lg" style="width: 250px; height: 60px;">HD画質で再生</button></a>
+                    </div>
+                    <div style="margin-right: 100px;float: right;margin-bottom: 30px;" id="sd_button" product_id="">
+                        <a><button class="btn btn-primary btn-lg"  style="width: 250px; height: 60px;">SD画質で再生</button></a>
+                    </div>
+                    <div style="margin-right: 100px;float: right;margin-bottom: 30px;" id="review_button" product_id="">
+                        <a><button class="btn btn-primary btn-lg"  style="width: 250px; height: 60px;">レビューする</button></a>
+                    </div>
+                    <!-- ▼関連カテゴリ▼ -->
+                    <div id="relative_category_box" class="relative_cat" style="clear:both;">
+
+                    </div>
+                    <!-- ▲関連カテゴリ▲ -->
                 </div>
-            {% else %}
-                <p id="favorite_list__not_found_message" class="intro">ストリーミング動画が登録されていません。</p>
-            {% endif %}
+                <div class="modal-footer" style="clear:both;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

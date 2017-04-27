@@ -464,11 +464,7 @@ class OrderRepository extends EntityRepository
     public function getQueryBuilderByCustomer(\Eccube\Entity\Customer $Customer)
     {
         $qb = $this->createQueryBuilder('o')
-            ->leftJoin('o.OrderDetails', 'od')
-            ->leftJoin('od.ProductClass', 'pc')
-            ->leftJoin('pc.ProductType', 'pt')
             ->Where('o.Customer = :Customer')
-            ->andWhere('pt.id != 2')
             ->setParameter('Customer', $Customer);
 
         // Order By
@@ -500,6 +496,7 @@ class OrderRepository extends EntityRepository
         if (!empty($searchData['heart']) && $searchData['heart'] == 1) {
             $qb->leftJoin('p.CustomerFavoriteProducts', 'cfp');
             $qb->andWhere('cfp.Customer = :Customer');
+            $qb->andWhere('cfp.flag = 2');
         }
 
         $qb ->andWhere('o.Customer = :Customer')
