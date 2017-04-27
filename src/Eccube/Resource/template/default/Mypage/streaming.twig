@@ -27,12 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
 
-{% block stylesheet %}
-    <link href="http://vjs.zencdn.net/5.19.1/video-js.css" rel="stylesheet">
-{% endblock stylesheet %}
-
 {% block javascript %}
-    <script src="http://vjs.zencdn.net/5.19.1/video.js"></script>
     <script>
         // 表示件数を変更
         function fnChangeDispNumber(dispNumber) {
@@ -72,6 +67,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             $("#hd_button").attr("product_id", productId);
             $("#sd_button").attr("product_id", productId);
             var category = $("#category_box"+productId).html();
+            $("#relative_category_box").html("");
             $("#relative_category_box").append(category);
         }
 
