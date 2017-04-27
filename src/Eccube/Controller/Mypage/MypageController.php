@@ -371,6 +371,15 @@ class MypageController extends AbstractController
         ));
     }
 
+    public function videosd(Application $app, Request $request)
+    {
+        $productId = $request->get("product_id");
+        $Product = $app['eccube.repository.product']->find($productId);
+        return $app->render('Mypage/video_sd.twig', array(
+            "Product" => $Product
+        ));
+    }
+
     /**
      * お気に入り商品を削除する.
      *

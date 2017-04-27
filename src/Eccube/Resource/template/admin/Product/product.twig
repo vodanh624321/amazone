@@ -259,8 +259,8 @@ function fnClass(action) {
                             <div id="detail_video_box" class="form-group">
                                 {{ form_label(form.hd_link) }}
                                 <div id="detail_trailer_video_box__detail" class="col-sm-9 col-lg-10">
-                                    <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" poster="{{ app.config.image_save_urlpath }}/0411185946_58eca91257e95.jpg " data-setup="{}">
-                                        <source src="{{ app.config.user_data_urlpath }}/video/oceans.mp4" type='video/mp4'>
+                                    <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" poster="{{ app.config.image_save_urlpath }}/{{ Product.poster }}" data-setup="{}">
+                                        <source src="{{ app.config.user_data_urlpath }}/video/{{ Product.hd_link }}" type='video/mp4'>
                                         <p class="vjs-no-js">
                                             To view this video please enable JavaScript, and consider upgrading to a web browser that
                                             <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>

@@ -83,6 +83,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 window.open('{{ url('mypage_video') }}?product_id=' + product_id,"WindowName","width=700,height=400");
                 return false;
             });
+
+            $('#sd_button').click(function() {
+                var product_id = $(this).attr("product_id");
+                window.open('{{ url('mypage_video_sd') }}?product_id=' + product_id,"WindowName","width=700,height=400");
+                return false;
+            });
         });
 
         // 商品表示BOXの高さを揃える

@@ -310,10 +310,14 @@ class ProductController extends AbstractController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 log_info('商品登録開始', array($id));
+                /* @var $Product \Eccube\Entity\Product */
                 $Product = $form->getData();
 
                 if (!$has_class) {
+                    /* @var $ProductClass \Eccube\Entity\ProductClass */
                     $ProductClass = $form['class']->getData();
+                    $Product->setHdLink($ProductClass->getCode()."_hd.mp4");
+                    $Product->setSdLink($ProductClass->getCode()."_sd.mp4");
 
                     // 個別消費税
                     $BaseInfo = $app['eccube.repository.base_info']->get();
