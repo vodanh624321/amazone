@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 {% block stylesheet %}
     <link href="http://vjs.zencdn.net/5.19.1/video-js.css" rel="stylesheet">
     <link href="{{ app.config.front_urlpath }}/css/videojs-resolution-switcher.css" rel="stylesheet">
+    <link href="{{ app.config.front_urlpath }}/css/videojs-sublime.css" rel="stylesheet">
 
 {% endblock stylesheet %}
 
@@ -78,7 +79,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% block main %}
 <div id="video_box">
-    <video id="video" class="video-js vjs-default-skin" controls preload="auto" width="680" height="375" poster="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}" data-setup="{}">
+    <video id="video" class="video-js vjs-sublime-skin" controls preload="auto" width="680" height="375" poster="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}" data-setup="{}">
     </video>
 </div>
 {% endblock %}
