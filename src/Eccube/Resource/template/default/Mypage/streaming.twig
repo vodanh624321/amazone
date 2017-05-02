@@ -62,11 +62,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             });
         }
 
-        function fnImageClick(image, productId) {
+        function fnImageClick(image, productId, flag) {
             $("#modal-image").attr("src", "{{ app.config.image_save_urlpath }}" + "/" + image);
-            $("#hd_button").attr("product_id", productId);
-            $("#sd_button").attr("product_id", productId);
+            $("#hd_button button").attr("product_id", productId);
+            $("#sd_button button").attr("product_id", productId);
             var category = $("#category_box"+productId).html();
+            if (flag != 1) {
+                $("#hd_button button").prop("disabled", true);
+                $("#sd_button button").prop("disabled", true);
+            } else {
+                $("#hd_button button").prop("disabled", false);
+                $("#sd_button button").prop("disabled", false);
+            }
             $("#relative_category_box").html("");
             $("#relative_category_box").append(category);
         }
@@ -76,13 +83,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 $("#page_navi_top").submit();
             });
 
-            $('#hd_button').click(function() {
+            $('#hd_button button').click(function() {
                 var product_id = $(this).attr("product_id");
                 window.open('{{ url('mypage_video') }}?product_id=' + product_id,"WindowName","width=700,height=400");
                 return false;
             });
 
-            $('#sd_button').click(function() {
+            $('#sd_button button').click(function() {
                 var product_id = $(this).attr("product_id");
                 window.open('{{ url('mypage_video_sd') }}?product_id=' + product_id,"WindowName","width=700,height=400");
                 return false;
@@ -140,6 +147,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                     {% set Product = OrderDetail.Product %}
                                     {% set flag = false %}
                                     {% set FavoriteProducts = Order.Customer.CustomerFavoriteProducts %}
+                                    {% if Product.sell_date is not null and date(Product.sell_date) <= date() %}
+                                        {% set video_flag = true %}
+                                    {% else %}
+                                        {% set video_flag = false %}
+                                    {% endif %}
                                     {% for Favorite in FavoriteProducts %}
                                         {% if Favorite.Product.id == Product.id and  Favorite.flag == 2 %}
                                             {% set flag = true %}
@@ -147,7 +159,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                     {% endfor %}
                                     <div id="favorite__list--{{ Product.id }}" class="col-sm-3 col-xs-6">
                                         <div id="favorite_list__item--{{ Product.id }}" class="product_item">
-                                            <a href="javascript:void(0)" onclick="fnImageClick('{{ Product.main_list_image|no_image_product }}', {{ Product.id }});" data-toggle="modal" data-target="#mymodel">
+                                            <a href="javascript:void(0)" onclick="fnImageClick('{{ Product.main_list_image|no_image_product }}', {{ Product.id }}, '{{ video_flag }}');" data-toggle="modal" data-target="#mymodel">
                                                 <div id="favorite_list__image--{{ Product.id }}" class="item_photo">
                                                     <img src="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}" alt="{{ Product.name }}"/>
                                                 </div>
@@ -157,9 +169,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                             </a>
 
                                             <dl id="favorite_list__detail--{{ Product.id }}">
-                                                <dt id="favorite_list__name--{{ Product.id }}" class="item_name" style="height: 22px;"> {{ Product.name }}</dt>
+                                                <dt id="favorite_list__name--{{ Product.id }}" class="item_name"
+                                                    style="height: 22px;"> {{ Product.name }}
+                                                    {% if video_flag == true %}
+                                                        <span class="badge" style="background-color: #1E347B;">再生できる</span>
+                                                    {% else %}
+                                                        <span class="badge">再生できません</span>
+                                                    {% endif %}
+                                                </dt>
                                             </dl>
-
                                         </div>
                                     </div>
 

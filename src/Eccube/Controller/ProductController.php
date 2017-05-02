@@ -312,12 +312,20 @@ class ProductController
             $is_favorite = $app['eccube.repository.customer_favorite_product']->isFavorite($Customer, $Product);
         }
 
+        $sellDate = $Product->getSellDate();
+        $sellFlag = false;
+        $now = new \DateTime("now");
+        if ($sellDate != null && $sellDate->format('Y-m-d') >= $now->format('Y-m-d')) {
+            $sellFlag = true;
+        }
+
         return $app->render('Product/detail.twig', array(
             'title' => $this->title,
             'subtitle' => $Product->getName(),
             'form' => $form->createView(),
             'Product' => $Product,
             'is_favorite' => $is_favorite,
+            'sell_flag' => $sellFlag,
         ));
     }
 
