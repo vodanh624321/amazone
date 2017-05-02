@@ -185,7 +185,9 @@ $(function() {
                 <div id="confirm_main" class="col-sm-8">
                     <div id="cart_box" class="cart_item table">
                         <div id="cart_box_list" class="tbody">
+                            {% set product_type = 1 %}
                             {% for orderDetail in Order.orderDetails %}
+                                {% set product_type = orderDetail.ProductClass.ProductType.id %}
                             <div id="cart_box_list__item_box--{{ loop.index }}" class="item_box tr">
                                 <div id="cart_box_list__item--{{ loop.index }}" class="td table">
                                     <div id="cart_box_list__photo--{{ loop.index }}" class="item_photo"><img src="{{ app.config.image_save_urlpath }}/{{ orderDetail.product.MainListImage|no_image_product }}" alt="{{ orderDetail.productName }}" /></div>
@@ -236,29 +238,38 @@ $(function() {
                         {% endif %}
                     </div>
 
-                    <h2 class="heading02">配送情報</h2>
-                    {% for shipping in Order.shippings %}
-                        {% set idx = loop.index0 %}
-                        <div id="shipping_confirm_box--{{ idx }}" class="column is-edit">
-                            <div id="shopping_confirm_box__shipping_delivery--{{ idx }}" class="form-inline form-group">
-                                <label>配送方法</label>
-                                {{ form_widget(form.shippings[idx].delivery, {'attr': {'class': 'delivery'}}) }}
-                                {{ form_errors(form.shippings[idx].delivery) }}
-                            </div>
 
-                            <div id="shopping_confirm_box__shipping_delivery_date_time--{{ idx }}" class="form-inline form-group">
-                                <label>お届け日</label>
-                                {{ form_widget(form.shippings[idx].shippingDeliveryDate) }}<br class="sp">
-                                <label>お届け時間</label>
-                                {{ form_widget(form.shippings[idx].deliveryTime) }}
+                    <div {% if product_type == 2 %} style="display: none;" {% endif %}>
+                        <h2 class="heading02 ">配送情報</h2>
+                        {% for shipping in Order.shippings %}
+                            {% set idx = loop.index0 %}
+                            <div id="shipping_confirm_box--{{ idx }}" class="column is-edit">
+                                <div id="shopping_confirm_box__shipping_delivery--{{ idx }}"
+                                     class="form-inline form-group">
+                                    <label>配送方法</label>
+                                    {{ form_widget(form.shippings[idx].delivery, {'attr': {'class': 'delivery'}}) }}
+                                    {{ form_errors(form.shippings[idx].delivery) }}
+                                </div>
+
+                                <div id="shopping_confirm_box__shipping_delivery_date_time--{{ idx }}"
+                                     class="form-inline form-group">
+                                    <label>お届け日</label>
+                                    {{ form_widget(form.shippings[idx].shippingDeliveryDate) }}<br class="sp">
+                                    <label>お届け時間</label>
+                                    {{ form_widget(form.shippings[idx].deliveryTime) }}
+                                </div>
                             </div>
-                        </div>
-                        {% if loop.last == false%}<hr>{% endif %}
-                    {% endfor %}
-                    {% if BaseInfo.optionMultipleShipping %}
-                        <hr>
-                        <div><a id="shopping_confirm_box__button_edit_multiple"  href="{{ url('shopping_shipping_multiple_change') }}" class="btn btn-default btn-sm btn-shipping-multiple">お届け先を追加する</a></div>
-                    {% endif %}
+                            {% if loop.last == false %}
+                                <hr>{% endif %}
+                        {% endfor %}
+                        {% if BaseInfo.optionMultipleShipping %}
+                            <hr>
+                            <div><a id="shopping_confirm_box__button_edit_multiple"
+                                    href="{{ url('shopping_shipping_multiple_change') }}"
+                                    class="btn btn-default btn-sm btn-shipping-multiple">お届け先を追加する</a></div>
+                        {% endif %}
+
+                    </div>
 
                     <h2 class="heading02">お支払方法</h2>
                     <div id="payment_list" class="column">
