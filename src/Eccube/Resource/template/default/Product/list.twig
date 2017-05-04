@@ -22,6 +22,155 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 {% extends 'default_frame.twig' %}
 
 {% set body_class = 'product_page' %}
+{% block stylesheet %}
+    <style>
+        @import url('http://fonts.googleapis.com/css?family=Montserrat:400,700');
+        @import url('http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font: 12px/1 'Montserrat', sans-serif;
+            color: #333;
+            background: #333;
+            overflow-x: hidden;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100%;
+        }
+
+        .sidebar {
+            position: absolute;
+            width: 220px;
+            background-color: white;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            box-shadow: 0 0 1px rgba(0, 0, 0, 1);
+            transform: translate3d(0, 0, 0);
+            transition: transform .3s;
+        }
+
+        .content.isOpen {
+            transform: translate3d(220px, 0, 0);
+            max-width: 900px;
+        }
+
+        .button {
+            cursor: pointer;
+        }
+
+        .button:before {
+            content: '\f0c9';
+            font: 42px fontawesome;
+        }
+
+        /* Demo Navigation */
+
+        .title {
+            font-size: 20px;
+            line-height: 60px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 7px;
+            color: #eee;
+            border-bottom: 1px solid #222;
+            background: #2a2a2a;
+        }
+
+        .nav li a {
+            position: relative;
+            display: block;
+            padding: 15px 15px 15px 50px;
+            font-size: 15px;
+            color: #3F5467;
+            border-bottom: 1px solid #222;
+        }
+
+        .nav li a:before {
+            font: 14px fontawesome;
+            position: absolute;
+            top: 14px;
+            left: 20px;
+        }
+
+        /*.nav li:nth-child(1) a:before {*/
+            /*content: '\f00a';*/
+        /*}*/
+
+        /*.nav li:nth-child(2) a:before {*/
+            /*content: '\f012';*/
+        /*}*/
+
+        /*.nav li:nth-child(3) a:before {*/
+            /*content: '\f0e8';*/
+        /*}*/
+
+        /*.nav li:nth-child(4) a:before {*/
+            /*content: '\f0c3';*/
+        /*}*/
+
+        /*.nav li:nth-child(5) a:before {*/
+            /*content: '\f022';*/
+        /*}*/
+
+        /*.nav li:nth-child(6) a:before {*/
+            /*content: '\f115';*/
+        /*}*/
+
+        /*.nav li:nth-child(7) a:before {*/
+            /*content: '\f085';*/
+        /*}*/
+
+        /*.nav li:nth-child(8) a:before {*/
+            /*content: '\f023';*/
+            /*left: 23px;*/
+        /*}*/
+
+        .nav li a:hover {
+            background: #f0f0f0;
+            color: #2a6496;
+            font-weight: bold;
+        }
+
+        .nav li a.active {
+            box-shadow: inset 5px 0 0 #5b5, inset 6px 0 0 #222;
+            background: #f0f0f0;
+            color: #2a6496;
+            font-weight: bold;
+        }
+
+        /* Demo Description */
+
+        h1 {
+            margin: 25px 0 15px;
+            font-size: 28px;
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 400;
+            color: #999;
+        }
+    </style>
+{% endblock %}
 
 {% block javascript %}
     <script>
@@ -39,111 +188,186 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             eccube.submitForm();
         }
         // 商品表示BOXの高さを揃える
-        $(window).load(function() {
+        $(window).load(function () {
             $('.product_item').matchHeight();
+            $(".category-nav").hide();
+        });
+
+        $(document).ready(function () {
+            $('.button').on('click', function () {
+                $('.content').toggleClass('isOpen');
+            });
+            $("ul.nav li a").click(function () {
+                var category_id = $(this).attr("category_id");
+                $(this).toggleClass('active');
+                return false;
+            });
         });
     </script>
 {% endblock %}
 
 {% block main %}
     {% if search_form.category_id.vars.errors|length == 0 %}
-    <form name="form1" id="form1" method="get" action="?">
-        {{ form_widget(search_form) }}
-    </form>
-    <!-- ▼topicpath▼ -->
-    <div id="topicpath" class="row">
-        <ol id="list_header_menu">
-            <li><a href="{{ url('product_list') }}">全商品</a></li>
-            {% if Category is not null %}
-                {% for Path in Category.path %}
-                    <li><a href="{{ url('product_list') }}?category_id={{ Path.id }}">{{ Path.name }}</a></li>
-                {% endfor %}
-            {% endif %}
-            {% if search_form.vars.value.name %}
-            <li>「{{ search_form.vars.value.name }}」の検索結果</li>
-            {% endif %}
-        </ol>
-    </div>
-    <!-- ▲topicpath▲ -->
-    <div id="result_info_box" class="row">
-        <form name="page_navi_top" id="page_navi_top" action="?">
-            {% if pagination.totalItemCount > 0 %}
-                <p id="result_info_box__item_count" class="intro col-sm-6"><strong><span id="productscount">{{ pagination.totalItemCount }}</span>件</strong>の商品がみつかりました。
-                </p>
-
-                <div id="result_info_box__menu_box" class="col-sm-6 no-padding">
-                    <ul id="result_info_box__menu" class="pagenumberarea clearfix">
-                        <li id="result_info_box__disp_menu">
-                            {{ form_widget(disp_number_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeDispNumber(this.value);"}}) }}
-                        </li>
-                        <li id="result_info_box__order_menu">
-                            {{ form_widget(order_by_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeOrderBy(this.value);"}}) }}
-                        </li>
-                    </ul>
-                </div>
-
-                {% for f in disp_number_form.getIterator %}
-                    {% if f.vars.name matches '[^plg*]' %}
-                        {{ form_label(f) }}
-                        {{ form_widget(f) }}
-                        {{ form_errors(f) }}
-                    {% endif %}
-                {% endfor %}
-
-                {% for f in order_by_form.getIterator %}
-                    {% if f.vars.name matches '[^plg*]' %}
-                        {{ form_label(f) }}
-                        {{ form_widget(f) }}
-                        {{ form_errors(f) }}
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                <p id="result_info_box__item_count" class="intro col-sm-6"><strong style="display: none;"><span id="productscount">{{ pagination.totalItemCount }}</span>件</strong>お探しの商品は見つかりませんでした。</p>
-            {% endif %}
+        <form name="form1" id="form1" method="get" action="?">
+            {{ form_widget(search_form) }}
         </form>
-    </div>
+        <!-- ▼topicpath▼ -->
+        {#<div id="topicpath" class="row">#}
+        {#<ol id="list_header_menu">#}
+        {#<li><a href="{{ url('product_list') }}">全商品</a></li>#}
+        {#{% if Category is not null %}#}
+        {#{% for Path in Category.path %}#}
+        {#<li><a href="{{ url('product_list') }}?category_id={{ Path.id }}">{{ Path.name }}</a></li>#}
+        {#{% endfor %}#}
+        {#{% endif %}#}
+        {#{% if search_form.vars.value.name %}#}
+        {#<li>「{{ search_form.vars.value.name }}」の検索結果</li>#}
+        {#{% endif %}#}
+        {#</ol>#}
+        {#</div>#}
 
-    <!-- ▼item_list▼ -->
-    <div id="item_list">
-        <div class="row no-padding">
-            {% for Product in pagination %}
-                <div id="result_list_box--{{ Product.id }}" class="col-sm-3 col-xs-6">
-                    <div id="result_list__item--{{ Product.id }}" class="product_item">
-                        <a href="{{ url('product_detail', {'id': Product.id}) }}">
-                            <div id="result_list__image--{{ Product.id }}" class="item_photo">
-                                <img src="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}">
-                            </div>
-                            <dl id="result_list__detail--{{ Product.id }}">
-                                <dt id="result_list__name--{{ Product.id }}" class="item_name">{{ Product.name }}</dt>
-                                {% if Product.description_list %}
-                                    <dd id="result_list__description_list--{{ Product.id }}" class="item_comment">{{ Product.description_list|raw|nl2br }}</dd>
-                                {% endif %}
-                                {% if Product.hasProductClass %}
-                                    {% if Product.getPrice02Min == Product.getPrice02Max %}
-                                    <dd id="result_list__price02_inc_tax--{{ Product.id }}" class="item_price">
-                                        {{ Product.getPrice02IncTaxMin|price }}
-                                    </dd>
-                                    {% else %}
-                                    <dd id="result_list__price02_inc_tax--{{ Product.id }}" class="item_price">
-                                        {{ Product.getPrice02IncTaxMin|price }} ～ {{ Product.getPrice02IncTaxMax|price }}
-                                    </dd>
-                                    {% endif %}
-                                {% else %}
-                                    <dd id="result_list__price02_inc_tax--{{ Product.id }}" class="item_price">{{ Product.getPrice02IncTaxMin|price }}</dd>
-                                {% endif %}
-                            </dl>
+        <div class='wrapper'>
+        <div class='sidebar'>
+            <div class='title' style="background: #0092C4;"><span >対象商品:{{ pagination.totalItemCount }}件</span></div>
+            <div class='title'>親カテゴリ</div>
+            <ul class='nav'>
+                {% for Category in Categories %}
+                    <li>
+                        <a category_id="{{ Category.id }}">
+                            {{ Category.name }}
                         </a>
-                    </div>
-                </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class='title'>子カテゴリ</div>
+            <ul class='nav'>
+                <ul class="nav">
+                    {% for Category in Categories %}
+                        {% if Category.children|length > 0 %}
+                            {% for child in Category.children %}
+                                <li>
+                                    <a category_id="{{ child.id }}">
+                                        {{ child.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </ul>
+
+            {% for Category in Categories %}
+                {% if Category.children|length > 0 %}
+                    {% set child = Category.children %}
+                    {% for child in Category.children %}
+                        {% if child.children|length > 0 %}
+                            {% for grandson in child.children %}
+                                {% if grandson.children|length > 0 %}
+                                    <div class='title'>{{ grandson.name }}</div>
+                                    <ul class='nav'>
+                                        {% for level4 in grandson.children %}
+                                            <li>
+                                                <a href="{{ url('product_list') }}?category_id={{ level4.id }}">
+                                                    {{ level4.name }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
             {% endfor %}
         </div>
+        <div class='content isOpen'>
+        <a class='button'></a>
+        <div id="result_info_box" class="row">
+            <!-- ▲topicpath▲ -->
+            <form name="page_navi_top" id="page_navi_top" action="?">
+                {% if pagination.totalItemCount > 0 %}
+                    <div id="result_info_box__menu_box" class="col-sm-6 no-padding col-sm-offset-6">
+                        <ul id="result_info_box__menu" class="pagenumberarea clearfix">
+                            <li id="result_info_box__disp_menu">
+                                {{ form_widget(disp_number_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeDispNumber(this.value);"}}) }}
+                            </li>
+                            <li id="result_info_box__order_menu">
+                                {{ form_widget(order_by_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeOrderBy(this.value);"}}) }}
+                            </li>
+                        </ul>
+                    </div>
 
-    </div>
-    <!-- ▲item_list▲ -->
-    {% if pagination.totalItemCount > 0 %}
-        {% include "pagination.twig" with { 'pages' : pagination.paginationData } %}
-    {% endif %}
+                    {% for f in disp_number_form.getIterator %}
+                        {% if f.vars.name matches '[^plg*]' %}
+                            {{ form_label(f) }}
+                            {{ form_widget(f) }}
+                            {{ form_errors(f) }}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for f in order_by_form.getIterator %}
+                        {% if f.vars.name matches '[^plg*]' %}
+                            {{ form_label(f) }}
+                            {{ form_widget(f) }}
+                            {{ form_errors(f) }}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p id="result_info_box__item_count" class="intro col-sm-6"><strong style="display: none;"><span
+                                    id="productscount">{{ pagination.totalItemCount }}</span>件</strong>お探しの商品は見つかりませんでした。
+                    </p>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- ▼item_list▼ -->
+        <div id="item_list">
+            <div class="row no-padding">
+                {% for Product in pagination %}
+                    <div id="result_list_box--{{ Product.id }}" class="col-sm-3 col-xs-6">
+                        <div id="result_list__item--{{ Product.id }}" class="product_item">
+                            <a href="{{ url('product_detail', {'id': Product.id}) }}">
+                                <div id="result_list__image--{{ Product.id }}" class="item_photo">
+                                    <img src="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}">
+                                </div>
+                                <dl id="result_list__detail--{{ Product.id }}">
+                                    <dt id="result_list__name--{{ Product.id }}"
+                                        class="item_name">{{ Product.name }}</dt>
+                                    {% if Product.description_list %}
+                                        <dd id="result_list__description_list--{{ Product.id }}"
+                                            class="item_comment">{{ Product.description_list|raw|nl2br }}</dd>
+                                    {% endif %}
+                                    {% if Product.hasProductClass %}
+                                        {% if Product.getPrice02Min == Product.getPrice02Max %}
+                                            <dd id="result_list__price02_inc_tax--{{ Product.id }}" class="item_price">
+                                                {{ Product.getPrice02IncTaxMin|price }}
+                                            </dd>
+                                        {% else %}
+                                            <dd id="result_list__price02_inc_tax--{{ Product.id }}" class="item_price">
+                                                {{ Product.getPrice02IncTaxMin|price }}
+                                                ～ {{ Product.getPrice02IncTaxMax|price }}
+                                            </dd>
+                                        {% endif %}
+                                    {% else %}
+                                        <dd id="result_list__price02_inc_tax--{{ Product.id }}"
+                                            class="item_price">{{ Product.getPrice02IncTaxMin|price }}</dd>
+                                    {% endif %}
+                                </dl>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- ▲item_list▲ -->
+        {% if pagination.totalItemCount > 0 %}
+            {% include "pagination.twig" with { 'pages' : pagination.paginationData } %}
+        {% endif %}
     {% else %}
         <p class="errormsg text-danger">ご指定のカテゴリは存在しません。</p>
     {% endif %}
+    </div>
+    </div>
+
+
 {% endblock %}
