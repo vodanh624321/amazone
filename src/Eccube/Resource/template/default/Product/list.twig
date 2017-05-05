@@ -101,6 +101,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             font-size: 15px;
             color: #3F5467;
             border-bottom: 1px solid #222;
+            border-left: 1px solid #222;
         }
 
         .nav li a:before {
@@ -169,6 +170,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             font-weight: 400;
             color: #999;
         }
+
+        .hide{
+            display: none;
+        }
+
     </style>
 {% endblock %}
 
@@ -198,8 +204,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 $('.content').toggleClass('isOpen');
             });
             $("ul.nav li a").click(function () {
+                var active = $(this).parent().parent().find(".active");
+                var active_id = active.attr("category_id");
                 var category_id = $(this).attr("category_id");
-                $(this).toggleClass('active');
+                if (active_id != category_id) {
+                    active.toggleClass('active');
+                    $(this).toggleClass('active');
+                    var level = $(this).attr("level");
+                    if (level == 1) {
+                        $('a[parent_id="'+category_id+'"]').toggleClass('hide');
+                        $('a[parent_id="'+active_id+'"]').toggleClass('hide');
+                        $("#nav2").find(".active").removeClass("active");
+                        $("#nav3").addClass('hide');
+                        $("#title3").addClass('hide');
+                    }
+                    if (level == 2) {
+                        var parent_id = $(this).attr("parent_id");
+                        var active_parent_id = active.attr("parent_id");
+                        $("#nav3").removeClass('hide');
+                        $("#title3").removeClass('hide');
+                    }
+                }
+
                 return false;
             });
         });
@@ -211,78 +237,78 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         <form name="form1" id="form1" method="get" action="?">
             {{ form_widget(search_form) }}
         </form>
-        <!-- ▼topicpath▼ -->
-        {#<div id="topicpath" class="row">#}
-        {#<ol id="list_header_menu">#}
-        {#<li><a href="{{ url('product_list') }}">全商品</a></li>#}
-        {#{% if Category is not null %}#}
-        {#{% for Path in Category.path %}#}
-        {#<li><a href="{{ url('product_list') }}?category_id={{ Path.id }}">{{ Path.name }}</a></li>#}
-        {#{% endfor %}#}
-        {#{% endif %}#}
-        {#{% if search_form.vars.value.name %}#}
-        {#<li>「{{ search_form.vars.value.name }}」の検索結果</li>#}
-        {#{% endif %}#}
-        {#</ol>#}
-        {#</div>#}
 
         <div class='wrapper'>
         <div class='sidebar'>
             <div class='title' style="background: #0092C4;"><span >対象商品:{{ pagination.totalItemCount }}件</span></div>
-            <div class='title'>親カテゴリ</div>
+            <div class='title'>マインカテゴリ</div>
             <ul class='nav'>
                 {% for Category in Categories %}
                     <li>
-                        <a category_id="{{ Category.id }}">
-                            {{ Category.name }}
-                        </a>
+                        {% if Category.name == 'ストリーミング動画' %}
+                            <a category_id="{{ Category.id }}" level="1" class="active">
+                                {{ Category.name }}
+                            </a>
+                        {% else %}
+                            <a category_id="{{ Category.id }}" level="1">
+                                {{ Category.name }}
+                            </a>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>
-            <div class='title'>子カテゴリ</div>
-            <ul class='nav'>
-                <ul class="nav">
-                    {% for Category in Categories %}
-                        {% if Category.children|length > 0 %}
-                            {% for child in Category.children %}
-                                <li>
-                                    <a category_id="{{ child.id }}">
+            <div class='title'>サブカテゴリ</div>
+            <ul class='nav' id="nav2">
+                {% for Category in Categories %}
+                    {% if Category.children|length > 0 %}
+                        {% for child in Category.children %}
+                            <li>
+                                {% if Category.name == 'ストリーミング動画' %}
+                                    <a category_id="{{ child.id }}" parent_id="{{ Category.id }}" level="2">
                                         {{ child.name }}
                                     </a>
-                                </li>
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-                </ul>
+                                {% else %}
+                                    <a category_id="{{ child.id }}" parent_id="{{ Category.id }}" class="hide" level="2">
+                                        {{ child.name }}
+                                    </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
             </ul>
 
-            {% for Category in Categories %}
-                {% if Category.children|length > 0 %}
-                    {% set child = Category.children %}
-                    {% for child in Category.children %}
-                        {% if child.children|length > 0 %}
-                            {% for grandson in child.children %}
-                                {% if grandson.children|length > 0 %}
-                                    <div class='title'>{{ grandson.name }}</div>
-                                    <ul class='nav'>
-                                        {% for level4 in grandson.children %}
-                                            <li>
-                                                <a href="{{ url('product_list') }}?category_id={{ level4.id }}">
-                                                    {{ level4.name }}
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
+            <div class='title hide' id="title3">詳細カテゴリ</div>
+            <ul class='nav hide' id="nav3">
+                {% for Category in Categories %}
+                    {% if Category.children|length > 0 %}
+                        {% set child = Category.children %}
+                        {% for child in Category.children %}
+                            {% if child.children|length > 0 %}
+                                {% for grandson in child.children %}
+                                    {% if grandson.children|length > 0 %}
+                                            <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;>{{ grandson.name }}</li>
+                                            {% for level4 in grandson.children %}
+                                                <li>
+                                                    <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;">
+                                                        {{ level4.name }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                <li style="border-bottom: 1px solid #222;"></li>
+            </ul>
         </div>
         <div class='content isOpen'>
-        <a class='button'></a>
+
         <div id="result_info_box" class="row">
+            <a class='button'></a>
             <!-- ▲topicpath▲ -->
             <form name="page_navi_top" id="page_navi_top" action="?">
                 {% if pagination.totalItemCount > 0 %}
