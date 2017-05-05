@@ -37,13 +37,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 <nav id="category" class="drawer_block pc">
 
     <ul class="category-nav">
-    {% for Category in Categories %}
-        <li>
-            <a href="{{ url('product_list') }}?category_id={{ Category.id }}">
-                {{ Category.name }}
-            </a>
-        </li>
-    {% endfor %}
+        {% for Category in Categories %}
+            <li>
+                <a href="{{ url('product_list') }}?category_id={{ Category.id }}">
+                    {{ Category.name }}
+                </a>
+            </li>
+        {% endfor %}
     </ul> <!-- category-nav -->
 
     <ul class="category-nav">
@@ -60,7 +60,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         {% endfor %}
     </ul> <!-- category-nav -->
 
-    <ul class="category-nav">
+    <ul class="list-group">
         {% for Category in Categories %}
             {% if Category.children|length > 0 %}
                 {% set child = Category.children %}
