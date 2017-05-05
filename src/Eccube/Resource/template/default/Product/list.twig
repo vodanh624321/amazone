@@ -287,7 +287,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             {% if child.children|length > 0 %}
                                 {% for grandson in child.children %}
                                     {% if grandson.children|length > 0 %}
-                                            <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;>{{ grandson.name }}</li>
+                                        <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;"> {{ grandson.name }} </li>
                                             {% for level4 in grandson.children %}
                                                 <li>
                                                     <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;">
