@@ -207,10 +207,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 var active = $(this).parent().parent().find(".active");
                 var active_id = active.attr("category_id");
                 var category_id = $(this).attr("category_id");
-                if (active_id != category_id) {
-                    active.toggleClass('active');
-                    $(this).toggleClass('active');
-                    var level = $(this).attr("level");
+                var level = $(this).attr("level");
+                if (active_id != category_id || level == 3) {
+                    if (level != 3) {
+                        active.toggleClass('active');
+                        $(this).toggleClass('active');
+                    } else {
+                        $(this).toggleClass('active');
+                    }
+
                     if (level == 1) {
                         $('a[parent_id="'+category_id+'"]').toggleClass('hide');
                         $('a[parent_id="'+active_id+'"]').toggleClass('hide');
@@ -219,8 +224,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         $("#title3").addClass('hide');
                     }
                     if (level == 2) {
-                        var parent_id = $(this).attr("parent_id");
-                        var active_parent_id = active.attr("parent_id");
+                        $('#nav3 a[parent_id="'+category_id+'"]').removeClass('hide');
+                        $('#nav3 li[parent_id="'+category_id+'"]').removeClass('hide');
+                        $('#nav3 a[parent_id="'+active_id+'"]').addClass('hide');
+                        $('#nav3 li[parent_id="'+active_id+'"]').addClass('hide');
                         $("#nav3").removeClass('hide');
                         $("#title3").removeClass('hide');
                     }
@@ -287,10 +294,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             {% if child.children|length > 0 %}
                                 {% for grandson in child.children %}
                                     {% if grandson.children|length > 0 %}
-                                        <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;"> {{ grandson.name }} </li>
+                                        <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;" parent_id="{{ child.id }}"> {{ grandson.name }} </li>
                                             {% for level4 in grandson.children %}
                                                 <li>
-                                                    <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;">
+                                                    <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;" parent_id="{{ child.id }}">
                                                         {{ level4.name }}
                                                     </a>
                                                 </li>
