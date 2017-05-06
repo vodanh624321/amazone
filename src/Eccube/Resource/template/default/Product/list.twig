@@ -175,6 +175,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             display: none;
         }
 
+        #loader {
+            border: 16px solid green; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-bottom: 16px solid red;
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            animation: spin 2s linear infinite;
+            position: fixed;
+            top: 40%;
+            left: 46%;
+            display: none;
+            z-index: 9999;
+        }
+
+        #overlay {
+            z-index: 1000;
+            width: 100%;
+            height: 100%;
+            background: white;
+            position: fixed;
+            top: 0; /* slight offeset to allow toggle button to work */
+            left: 0;
+            display: none;
+            /* 0.4 = 40% */
+            opacity:0.95;
+            filter:alpha(opacity=70); /* For IE8 and earlier */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
     </style>
 {% endblock %}
 
@@ -193,6 +227,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             eccube.setValue('pageno', 1);
             eccube.submitForm();
         }
+
+        function getProductList(category_id) {
+            $.ajax({
+                type: 'POST',
+                dataType: 'html',
+                data: {
+                    'category_id' : category_id
+                },
+                url: '{{ url('product_realtime') }}',
+                success: function(data) {
+                    // モーダルに結果を書き出し.
+                    var height = $("#sidebar").height();
+                    $("#content").css("min-height", height);
+                    $('#content').html(data);
+                    var items = $("#all_items").val();
+                    $("#count_items").text("対象商品:" + items + "件");
+                    $("#overlay").hide();
+                    $("#loader").hide();
+
+                },
+                error: function() {
+                    console.log('search product failed.');
+                }
+            });
+
+        }
+
         // 商品表示BOXの高さを揃える
         $(window).load(function () {
             $('.product_item').matchHeight();
@@ -200,9 +261,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         });
 
         $(document).ready(function () {
-            $('.button').on('click', function () {
+            var height = $("#sidebar").height();
+            $("#content").css("min-height", height);
+            $(document).on('click', '.button',function () {
                 $('.content').toggleClass('isOpen');
             });
+
             $("ul.nav li a").click(function () {
                 var active = $(this).parent().parent().find(".active");
                 var active_id = active.attr("category_id");
@@ -223,18 +287,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         $("#nav3").addClass('hide');
                         $("#title3").addClass('hide');
                     }
+
                     if (level == 2) {
                         $('#nav3 a[parent_id="'+category_id+'"]').removeClass('hide');
                         $('#nav3 li[parent_id="'+category_id+'"]').removeClass('hide');
                         $('#nav3 a[parent_id="'+active_id+'"]').addClass('hide');
                         $('#nav3 li[parent_id="'+active_id+'"]').addClass('hide');
+                        $("#nav3").find(".active").removeClass("active");
                         $("#nav3").removeClass('hide');
                         $("#title3").removeClass('hide');
                     }
+                    $("#overlay").show();
+                    $("#loader").show();
+                    getProductList(category_id);
                 }
 
                 return false;
             });
+
+
         });
     </script>
 {% endblock %}
@@ -246,8 +317,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         </form>
 
         <div class='wrapper'>
-        <div class='sidebar'>
-            <div class='title' style="background: #0092C4;"><span >対象商品:{{ pagination.totalItemCount }}件</span></div>
+        <div class='sidebar' id="sidebar">
+            <div class='title' style="background: #0092C4;"><span id="count_items">対象商品:{{ pagination.totalItemCount }}件</span></div>
             <div class='title'>マインカテゴリ</div>
             <ul class='nav'>
                 {% for Category in Categories %}
@@ -294,10 +365,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             {% if child.children|length > 0 %}
                                 {% for grandson in child.children %}
                                     {% if grandson.children|length > 0 %}
-                                        <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;" parent_id="{{ child.id }}"> {{ grandson.name }} </li>
+                                        <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;" parent_id="{{ child.id }}" class="hide"> {{ grandson.name }} </li>
                                             {% for level4 in grandson.children %}
                                                 <li>
-                                                    <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;" parent_id="{{ child.id }}">
+                                                    <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;" parent_id="{{ child.id }}" class="hide">
                                                         {{ level4.name }}
                                                     </a>
                                                 </li>
@@ -312,7 +383,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 <li style="border-bottom: 1px solid #222;"></li>
             </ul>
         </div>
-        <div class='content isOpen'>
+        <div class='content isOpen' id="content">
 
         <div id="result_info_box" class="row">
             <a class='button'></a>
