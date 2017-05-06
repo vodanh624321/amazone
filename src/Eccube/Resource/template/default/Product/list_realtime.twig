@@ -200,9 +200,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         });
 
         $(document).ready(function () {
+            var height = $("#sidebar").height();
+            console.log(height);
+            $("#content").css("min-height", height);
             $('.button').on('click', function () {
                 $('.content').toggleClass('isOpen');
             });
+
             $("ul.nav li a").click(function () {
                 var active = $(this).parent().parent().find(".active");
                 var active_id = active.attr("category_id");
@@ -223,11 +227,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         $("#nav3").addClass('hide');
                         $("#title3").addClass('hide');
                     }
+
                     if (level == 2) {
                         $('#nav3 a[parent_id="'+category_id+'"]').removeClass('hide');
                         $('#nav3 li[parent_id="'+category_id+'"]').removeClass('hide');
                         $('#nav3 a[parent_id="'+active_id+'"]').addClass('hide');
                         $('#nav3 li[parent_id="'+active_id+'"]').addClass('hide');
+                        $("#nav3").find(".active").removeClass("active");
                         $("#nav3").removeClass('hide');
                         $("#title3").removeClass('hide');
                     }
@@ -246,7 +252,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         </form>
 
         <div class='wrapper'>
-        <div class='sidebar'>
+        <div class='sidebar' id="sidebar">
             <div class='title' style="background: #0092C4;"><span >対象商品:{{ pagination.totalItemCount }}件</span></div>
             <div class='title'>マインカテゴリ</div>
             <ul class='nav'>
@@ -294,10 +300,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             {% if child.children|length > 0 %}
                                 {% for grandson in child.children %}
                                     {% if grandson.children|length > 0 %}
-                                        <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;" parent_id="{{ child.id }}"> {{ grandson.name }} </li>
+                                        <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;" parent_id="{{ child.id }}" class="hide"> {{ grandson.name }} </li>
                                             {% for level4 in grandson.children %}
                                                 <li>
-                                                    <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;" parent_id="{{ child.id }}">
+                                                    <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;" parent_id="{{ child.id }}" class="hide">
                                                         {{ level4.name }}
                                                     </a>
                                                 </li>
@@ -312,7 +318,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 <li style="border-bottom: 1px solid #222;"></li>
             </ul>
         </div>
-        <div class='content isOpen'>
+        <div class='content isOpen' id="content">
 
         <div id="result_info_box" class="row">
             <a class='button'></a>
