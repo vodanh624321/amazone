@@ -204,6 +204,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             filter:alpha(opacity=70); /* For IE8 and earlier */
         }
 
+        .level3_group {
+            padding: 15px 15px 15px 30px;
+            border-bottom: none;
+            border-top:1px solid #222;
+            font-size: 15px;
+            border-left: 1px solid #222;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -393,7 +401,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             {% if child.children|length > 0 %}
                                 {% for grandson in child.children %}
                                     {% if grandson.children|length > 0 and grandson.hasProductCategories %}
-                                        <li style="padding: 15px 15px 15px 30px;border-bottom: none;border-top:1px solid #222;font-size: 15px;border-left: 1px solid #222;" parent_id="{{ child.id }}" class="hide"> {{ grandson.name }} </li>
+                                        <li class="level3_group hide" parent_id="{{ child.id }}" >{{ grandson.name }}</li>
                                             {% for level4 in grandson.children %}
                                                 {% if level4.hasProductCategories %}
                                                     <li>
