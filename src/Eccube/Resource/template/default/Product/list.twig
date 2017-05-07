@@ -228,12 +228,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             eccube.submitForm();
         }
 
-        function getProductList(category_id) {
+        function getProductList(category_id, level, all) {
             $.ajax({
                 type: 'POST',
                 dataType: 'html',
                 data: {
-                    'category_id' : category_id
+                    'category_id' : category_id,
+                    'level' : level,
+                    'all' : all,
                 },
                 url: '{{ url('product_realtime') }}',
                 success: function(data) {
@@ -278,6 +280,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         $(this).toggleClass('active');
                     } else {
                         $(this).toggleClass('active');
+                        //get all active level3 category.
+                        var all = $("#nav3 .active").map(function() {
+                            return $(this).attr("category_id");
+                        }).get().join();
+
+                        console.log(all);
+                        if (all != "") {
+                            $("#overlay").show();
+                            $("#loader").show();
+                            getProductList(category_id, 3, all);
+
+                        } else {
+                            $("#overlay").show();
+                            $("#loader").show();
+                            getProductList($(this).attr("paren_id"), 2);
+                        }
+
+                        return false;
                     }
 
                     if (level == 1) {
@@ -299,7 +319,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                     }
                     $("#overlay").show();
                     $("#loader").show();
-                    getProductList(category_id);
+                    getProductList(category_id, 1);
                 }
 
                 return false;

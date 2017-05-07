@@ -235,11 +235,20 @@ class ProductController
 
         /* @var $searchForm \Symfony\Component\Form\FormInterface */
         $searchForm = $builder->getForm();
-
+        $level = $request->get("level");
+        $category = $request->get("all");
         $searchForm->handleRequest($request);
-
         // paginator
         $searchData = $searchForm->getData();
+        if ($level == 3) {
+            if (strpos($category, ',') !== false) {
+                $category = explode(",", $category);
+                $pos = array_search($request->get("category_id"), $category);
+                unset($category[$pos]);
+                $searchData["all"] = $category;
+            }
+        }
+
         $qb = $app['eccube.repository.product']->getQueryBuilderBySearchData($searchData);
 
         $event = new EventArgs(
