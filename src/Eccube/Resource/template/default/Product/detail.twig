@@ -178,19 +178,6 @@ $(function(){
                     </p>
                     <!--▲商品コード-->
 
-                    <!-- ▼関連カテゴリ▼ -->
-                    <div id="relative_category_box" class="relative_cat">
-                        <p>関連カテゴリ</p>
-                          {% for ProductCategory in Product.ProductCategories %}
-                        <ol id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.index }}">
-                            {% for Category in ProductCategory.Category.path %}
-                            <li><a id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.parent.loop.index }}_{{ Category.id }}" href="{{ url('product_list') }}?category_id={{ Category.id }}">{{ Category.name }}</a></li>
-                            {% endfor %}
-                        </ol>
-                        {% endfor %}
-                    </div>
-                    <!-- ▲関連カテゴリ▲ -->
-
                     <form action="?" method="post" id="form1" name="form1">
                         <!--▼買い物かご-->
                         <div id="detail_cart_box" class="cart_area">
