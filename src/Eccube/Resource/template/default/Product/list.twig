@@ -321,10 +321,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                     }
 
                     if (level == 2) {
-                        $('#nav3 a[parent_id="'+category_id+'"]').removeClass('hide');
-                        $('#nav3 li[parent_id="'+category_id+'"]').removeClass('hide');
-                        $('#nav3 a[parent_id="'+active_id+'"]').addClass('hide');
-                        $('#nav3 li[parent_id="'+active_id+'"]').addClass('hide');
+                        $('#nav3 li.category' + category_id).removeClass('hide');
+                        $('#nav3 li.category' + active_id).addClass('hide');
                         $("#nav3").find(".active").removeClass("active");
                         $("#nav3").removeClass('hide');
                         $("#title3").removeClass('hide');
@@ -394,16 +392,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             <ul class='nav hide' id="nav3">
                 {% for Category in Categories %}
                     {% if Category.children|length > 0 %}
-                        {% set child = Category.children %}
                         {% for child in Category.children %}
                             {% if child.children|length > 0 %}
                                 {% for grandson in child.children %}
                                     {% if grandson.children|length > 0 and grandson.hasProductCategories %}
-                                        <li class="level3_group hide" parent_id="{{ child.id }}" >{{ grandson.name }}</li>
+                                        <li class="level3_group hide category{{ child.id }}" parent_id="{{ child.id }}" >{{ grandson.name }}</li>
                                             {% for level4 in grandson.children %}
                                                 {% if level4.hasProductCategories %}
-                                                    <li>
-                                                        <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;" parent_id="{{ child.id }}" class="hide">
+                                                    <li class="hide category{{ child.id }}">
+                                                        <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;" parent_id="{{ child.id }}">
                                                             {{ level4.name }}
                                                         </a>
                                                     </li>
