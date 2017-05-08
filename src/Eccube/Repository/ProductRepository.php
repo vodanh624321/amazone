@@ -103,6 +103,13 @@ class ProductRepository extends EntityRepository
                     ->setParameter('Categories', $Categories);
                 $categoryJoin = true;
             }
+            if (!empty($searchData['all'])) {
+                foreach ($searchData['all'] as $key => $value) {
+                    $Category = $this->app['eccube.repository.category']->find($value);
+                    $qb->orWhere('pct.Category = :Category')
+                        ->setParameter('Category', $Category);
+                }
+            }
         }
 
         // name

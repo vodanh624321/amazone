@@ -101,6 +101,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             font-size: 15px;
             color: #3F5467;
             border-bottom: 1px solid #222;
+            border-left: 1px solid #222;
         }
 
         .nav li a:before {
@@ -169,6 +170,53 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             font-weight: 400;
             color: #999;
         }
+
+        .hide{
+            display: none;
+        }
+
+        #loader {
+            border: 16px solid green; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-bottom: 16px solid red;
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            animation: spin 2s linear infinite;
+            position: fixed;
+            top: 40%;
+            left: 46%;
+            display: none;
+            z-index: 9999;
+        }
+
+        #overlay {
+            z-index: 1000;
+            width: 100%;
+            height: 100%;
+            background: white;
+            position: fixed;
+            top: 0; /* slight offeset to allow toggle button to work */
+            left: 0;
+            display: none;
+            /* 0.4 = 40% */
+            opacity:0.95;
+            filter:alpha(opacity=70); /* For IE8 and earlier */
+        }
+
+        .level3_group {
+            padding: 15px 15px 15px 30px;
+            border-bottom: none;
+            border-top:1px solid #222;
+            font-size: 15px;
+            border-left: 1px solid #222;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
     </style>
 {% endblock %}
 
@@ -187,6 +235,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             eccube.setValue('pageno', 1);
             eccube.submitForm();
         }
+
+        function getProductList(category_id, level, all) {
+            $.ajax({
+                type: 'POST',
+                dataType: 'html',
+                data: {
+                    'category_id' : category_id,
+                    'level' : level,
+                    'all' : all,
+                },
+                url: '{{ url('product_realtime') }}',
+                success: function(data) {
+                    // モーダルに結果を書き出し.
+                    var height = $("#sidebar").height();
+                    $("#content").css("min-height", height);
+                    $('#content').html(data);
+                    var items = $("#all_items").val();
+                    $("#count_items").text("対象商品:" + items + "件");
+                    $("#overlay").hide();
+                    $("#loader").hide();
+
+                },
+                error: function() {
+                    $("#overlay").hide();
+                    $("#loader").hide();
+                    console.log('search product failed.');
+                }
+            });
+
+        }
+
         // 商品表示BOXの高さを揃える
         $(window).load(function () {
             $('.product_item').matchHeight();
@@ -194,14 +273,73 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         });
 
         $(document).ready(function () {
-            $('.button').on('click', function () {
+            var height = $("#sidebar").height();
+            $("#content").css("min-height", height);
+            $(document).on('click', '.button',function () {
                 $('.content').toggleClass('isOpen');
             });
+
             $("ul.nav li a").click(function () {
+                var active = $(this).parent().parent().find(".active");
+                var active_id = active.attr("category_id");
                 var category_id = $(this).attr("category_id");
-                $(this).toggleClass('active');
+                var level = $(this).attr("level");
+                if (active_id != category_id || level == 3) {
+                    if (level != 3) {
+                        active.toggleClass('active');
+                        $(this).toggleClass('active');
+                    } else {
+                        $(this).toggleClass('active');
+                        //get all active level3 category.
+                        var all = $("#nav3 .active").map(function() {
+                            return $(this).attr("category_id");
+                        }).get().join();
+
+                        if (all != "") {
+                            $("#overlay").show();
+                            $("#loader").show();
+                            if (all.indexOf(",") > 0) {
+                                var category = all.split(",");
+                                getProductList(category[0], 3, all);
+                            } else {
+                                getProductList(all, 3, all);
+
+                            }
+                        } else {
+                            $("#overlay").show();
+                            $("#loader").show();
+                            getProductList($(this).attr("parent_id"), 2);
+                        }
+
+                        return false;
+                    }
+
+                    if (level == 1) {
+                        $('a[parent_id="'+category_id+'"]').toggleClass('hide');
+                        $('a[parent_id="'+active_id+'"]').toggleClass('hide');
+                        $("#nav2").find(".active").removeClass("active");
+                        $("#nav3").addClass('hide');
+                        $("#title3").addClass('hide');
+                    }
+
+                    if (level == 2) {
+                        $('#nav3 a[parent_id="'+category_id+'"]').removeClass('hide');
+                        $('#nav3 li[parent_id="'+category_id+'"]').removeClass('hide');
+                        $('#nav3 a[parent_id="'+active_id+'"]').addClass('hide');
+                        $('#nav3 li[parent_id="'+active_id+'"]').addClass('hide');
+                        $("#nav3").find(".active").removeClass("active");
+                        $("#nav3").removeClass('hide');
+                        $("#title3").removeClass('hide');
+                    }
+                    $("#overlay").show();
+                    $("#loader").show();
+                    getProductList(category_id, 1);
+                }
+
                 return false;
             });
+
+
         });
     </script>
 {% endblock %}
@@ -211,78 +349,81 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         <form name="form1" id="form1" method="get" action="?">
             {{ form_widget(search_form) }}
         </form>
-        <!-- ▼topicpath▼ -->
-        {#<div id="topicpath" class="row">#}
-        {#<ol id="list_header_menu">#}
-        {#<li><a href="{{ url('product_list') }}">全商品</a></li>#}
-        {#{% if Category is not null %}#}
-        {#{% for Path in Category.path %}#}
-        {#<li><a href="{{ url('product_list') }}?category_id={{ Path.id }}">{{ Path.name }}</a></li>#}
-        {#{% endfor %}#}
-        {#{% endif %}#}
-        {#{% if search_form.vars.value.name %}#}
-        {#<li>「{{ search_form.vars.value.name }}」の検索結果</li>#}
-        {#{% endif %}#}
-        {#</ol>#}
-        {#</div>#}
 
         <div class='wrapper'>
-        <div class='sidebar'>
-            <div class='title' style="background: #0092C4;"><span >対象商品:{{ pagination.totalItemCount }}件</span></div>
-            <div class='title'>親カテゴリ</div>
+        <div class='sidebar' id="sidebar">
+            <div class='title' style="background: #0092C4;"><span id="count_items">対象商品:{{ pagination.totalItemCount }}件</span></div>
+            <div class='title'>マインカテゴリ</div>
             <ul class='nav'>
                 {% for Category in Categories %}
                     <li>
-                        <a category_id="{{ Category.id }}">
-                            {{ Category.name }}
-                        </a>
+                        {% if Category.name == 'ストリーミング動画' %}
+                            <a category_id="{{ Category.id }}" level="1" class="active">
+                                {{ Category.name }}
+                            </a>
+                        {% else %}
+                            <a category_id="{{ Category.id }}" level="1">
+                                {{ Category.name }}
+                            </a>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>
-            <div class='title'>子カテゴリ</div>
-            <ul class='nav'>
-                <ul class="nav">
-                    {% for Category in Categories %}
-                        {% if Category.children|length > 0 %}
-                            {% for child in Category.children %}
+            <div class='title'>サブカテゴリ</div>
+            <ul class='nav' id="nav2">
+                {% for Category in Categories %}
+                    {% if Category.children|length > 0 %}
+                        {% for child in Category.children %}
+                            {% if child.hasProductCategories %}
                                 <li>
-                                    <a category_id="{{ child.id }}">
-                                        {{ child.name }}
-                                    </a>
+                                    {% if Category.name == 'ストリーミング動画' %}
+                                        <a category_id="{{ child.id }}" parent_id="{{ Category.id }}" level="2">
+                                            {{ child.name }}
+                                        </a>
+                                    {% else %}
+                                        <a category_id="{{ child.id }}" parent_id="{{ Category.id }}" class="hide" level="2">
+                                            {{ child.name }}
+                                        </a>
+                                    {% endif %}
                                 </li>
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-                </ul>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
             </ul>
 
-            {% for Category in Categories %}
-                {% if Category.children|length > 0 %}
-                    {% set child = Category.children %}
-                    {% for child in Category.children %}
-                        {% if child.children|length > 0 %}
-                            {% for grandson in child.children %}
-                                {% if grandson.children|length > 0 %}
-                                    <div class='title'>{{ grandson.name }}</div>
-                                    <ul class='nav'>
-                                        {% for level4 in grandson.children %}
-                                            <li>
-                                                <a href="{{ url('product_list') }}?category_id={{ level4.id }}">
-                                                    {{ level4.name }}
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
+            <div class='title hide' id="title3">詳細カテゴリ</div>
+            <ul class='nav hide' id="nav3">
+                {% for Category in Categories %}
+                    {% if Category.children|length > 0 %}
+                        {% set child = Category.children %}
+                        {% for child in Category.children %}
+                            {% if child.children|length > 0 %}
+                                {% for grandson in child.children %}
+                                    {% if grandson.children|length > 0 and grandson.hasProductCategories %}
+                                        <li class="level3_group hide" parent_id="{{ child.id }}" >{{ grandson.name }}</li>
+                                            {% for level4 in grandson.children %}
+                                                {% if level4.hasProductCategories %}
+                                                    <li>
+                                                        <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;" parent_id="{{ child.id }}" class="hide">
+                                                            {{ level4.name }}
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                <li style="border-bottom: 1px solid #222;"></li>
+            </ul>
         </div>
-        <div class='content isOpen'>
-        <a class='button'></a>
+        <div class='content isOpen' id="content">
+
         <div id="result_info_box" class="row">
+            <a class='button'></a>
             <!-- ▲topicpath▲ -->
             <form name="page_navi_top" id="page_navi_top" action="?">
                 {% if pagination.totalItemCount > 0 %}
