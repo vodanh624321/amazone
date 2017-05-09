@@ -177,6 +177,27 @@ $(function(){
                         <span class="badge">{{ Product.productType }}</span>
                     </p>
                     <!--▲商品コード-->
+                    
+                      <!-- ▼関連カテゴリ▼ -->
+                    <div id="relative_category_box" class="relative_cat">
+                        <p>関連カテゴリ</p>
+                          {% for ProductCategory in Product.ProductCategories %}
+                                                <ol id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.index }}">
+                                                    {% if ProductCategory.Category.level == 2 or ProductCategory.Category.level == 4 %}
+                                                        {% for Category in ProductCategory.Category.path %}
+                                                            {% if Category.level > 1 %}
+                                                                {% if Category.level == 3 %}
+                                                                    <li>{{ Category.name }}</li>
+                                                                {% else %}
+                                                                    <li><a id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.parent.loop.index }}_{{ Category.id }}" href="{{ url('product_list') }}?category_id={{ Category.id }}">{{ Category.name }}</a></li>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </ol>
+                                        {% endfor %}
+                    </div>
+                    <!-- ▲関連カテゴリ▲ -->
 
                     <form action="?" method="post" id="form1" name="form1">
                         <!--▼買い物かご-->

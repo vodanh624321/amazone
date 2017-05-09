@@ -96,6 +96,7 @@ class Category extends \Eccube\Entity\AbstractEntity
 
         return array_reverse($path);
     }
+    
 
     public function getNameWithLevel()
     {
