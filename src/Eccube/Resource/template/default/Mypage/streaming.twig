@@ -184,20 +184,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                     <div id="category_box{{ Product.id }}" class="relative_cat" style="clear:both;display: none">
                                         <p>関連カテゴリ</p>
                                         {% for ProductCategory in Product.ProductCategories %}
-                                                <ol id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.index }}">
-                                                    {% if ProductCategory.Category.level == 2 or ProductCategory.Category.level == 4 %}
-                                                        {% for Category in ProductCategory.Category.path %}
-                                                            {% if Category.level > 1 %}
-                                                                {% if Category.level == 3 %}
-                                                                    <li>{{ Category.name }}</li>
-                                                                {% else %}
-                                                                    <li><a id="relative_category_box__relative_category--{{ ProductCategory.product_id }}_{{ loop.parent.loop.index }}_{{ Category.id }}" href="{{ url('product_list') }}?category_id={{ Category.id }}">{{ Category.name }}</a></li>
-                                                                {% endif %}
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    {% endif %}
-                                                </ol>
+                                            <a>{{ ProductCategory.Category.name }}</a><br/>
                                         {% endfor %}
+                                        <ol id="relative_category_box__relative_category-">
+                                            <li>
+                                                <a href="{{ url('product_list') }}?category_id={{ Category.id }}">{{ Category.name }}</a>
+                                            </li>
+                                        </ol>
                                     </div>
 
                                 {% endfor %}
