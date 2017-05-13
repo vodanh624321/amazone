@@ -186,6 +186,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                          {% for ProductCategory in Product.ProductCategories %}
                                             <a>{{ ProductCategory.Category.name }} {{ ProductCategory.Category.level }} </a><br/>
                                         {% endfor %}
+                                        <ol id="relative_category_box__relative_category-">
+                                            <li>
+                                                <a href="{{ url('product_list') }}?category_id={{ Category.id }}">{{ Category.name }}</a>
+                                            </li>
+                                        </ol>
                                     </div>
                                 {% endfor %}
                             {% endfor %}
