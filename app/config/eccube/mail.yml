@@ -1,8 +1,8 @@
 mail:
-    transport: smtp
-    host: smtp.gmail.com
-    port: 465
-    username: lam.hedspi@gmail.com
+    transport: mail
+    host: 
+    port: 
+    username: 
     password: 
     encryption: null
     auth_mode: null

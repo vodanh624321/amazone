@@ -271,6 +271,36 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         });
 
         $(document).ready(function () {
+            var cateID = $("#category_id").val();
+            if (cateID != "") {
+                var element = $(".cate" + cateID);
+                if (element.attr("level") == 1) {
+                    element.addClass("active");
+                    $(".parent" + cateID).removeClass("hide"); 
+                }
+                
+                if (element.attr("level") == 2) {
+                    element.addClass("active");
+                    $(".parent" + element.attr("parent_id")).removeClass("hide"); 
+                    $(".cate" + element.attr("parent_id")).addClass("active"); 
+                }
+                
+                if (element.attr("level") == 3) {
+                    $("#title3").removeClass("hide");
+                    $("#nav3").removeClass('hide');
+                    element.find("a").addClass("active");
+                    element.removeClass("hide");
+                    $(".parent" + element.attr("parent_id")).removeClass("hide"); 
+                    $(".cate" + element.attr("parent_id")).addClass("active"); 
+                    $(".parent" + element.attr("grand_parent")).removeClass("hide"); 
+                    $(".cate" + element.attr("grand_parent")).addClass("active"); 
+                }
+                
+            } else {
+                $(".cate1").addClass("active");
+                $(".parent1").removeClass("hide");
+            }
+            
             var height = $("#sidebar").height();
             $("#content").css("min-height", height);
             $(document).on('click', '.button',function () {
@@ -282,6 +312,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 var active_id = active.attr("category_id");
                 var category_id = $(this).attr("category_id");
                 var level = $(this).attr("level");
+                $("#category_id").val(category_id);
                 if (active_id != category_id || level == 3) {
                     if (level != 3) {
                         active.toggleClass('active');
@@ -327,6 +358,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         $("#nav3").removeClass('hide');
                         $("#title3").removeClass('hide');
                     }
+                    
                     $("#overlay").show();
                     $("#loader").show();
                     getProductList(category_id, 1);
@@ -334,8 +366,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
                 return false;
             });
-
-
         });
     </script>
 {% endblock %}
@@ -350,18 +380,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         <div class='sidebar' id="sidebar">
             <div class='title' style="background: #0092C4;"><span id="count_items">対象商品:{{ pagination.totalItemCount }}件</span></div>
             <div class='title'>マインカテゴリ</div>
-            <ul class='nav'>
+            <ul class='nav nav1'>
                 {% for Category in Categories %}
                     <li>
-                        {% if Category.name == 'ストリーミング動画' %}
-                            <a category_id="{{ Category.id }}" level="1" class="active">
-                                {{ Category.name }}
-                            </a>
-                        {% else %}
-                            <a category_id="{{ Category.id }}" level="1">
-                                {{ Category.name }}
-                            </a>
-                        {% endif %}
+                        <a category_id="{{ Category.id }}" level="1" class="cate{{ Category.id }}">
+                            {{ Category.name }}
+                        </a>
                     </li>
                 {% endfor %}
             </ul>
@@ -372,15 +396,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                         {% for child in Category.children %}
                             {% if child.hasProductCategories %}
                                 <li>
-                                    {% if Category.name == 'ストリーミング動画' %}
-                                        <a category_id="{{ child.id }}" parent_id="{{ Category.id }}" level="2">
-                                            {{ child.name }}
-                                        </a>
-                                    {% else %}
-                                        <a category_id="{{ child.id }}" parent_id="{{ Category.id }}" class="hide" level="2">
-                                            {{ child.name }}
-                                        </a>
-                                    {% endif %}
+                                    <a category_id="{{ child.id }}" parent_id="{{ Category.id }}" class="hide cate{{ child.id }} parent{{ Category.id }}" level="2">
+                                        {{ child.name }}
+                                    </a>
                                 </li>
                             {% endif %}
                         {% endfor %}
@@ -396,10 +414,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                             {% if child.children|length > 0 %}
                                 {% for grandson in child.children %}
                                     {% if grandson.children|length > 0 and grandson.hasProductCategories %}
-                                        <li class="level3_group hide category{{ child.id }}" parent_id="{{ child.id }}" >{{ grandson.name }}</li>
+                                        <li class="level3_group hide category{{ child.id }} parent{{ child.id }} cate{{ grandson.id }}" grand_parent="{{ Category.id }}" parent_id="{{ child.id }}">{{ grandson.name }}</li>
                                             {% for level4 in grandson.children %}
                                                 {% if level4.hasProductCategories %}
-                                                    <li class="hide category{{ child.id }}">
+                                                    <li class="hide category{{ child.id }} parent{{ child.id }} cate{{ level4.id }}" grand_parent="{{ Category.id }}" level="3" parent_id="{{ child.id }}">
                                                         <a href="{{ url('product_list') }}?category_id={{ level4.id }}" category_id="{{ level4.id }}" level="3" style="border-bottom: none;" parent_id="{{ child.id }}">
                                                             {{ level4.name }}
                                                         </a>

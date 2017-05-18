@@ -113,7 +113,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                         <div class="col-md-12 form-inline">
                                             {{ form_widget(form._token) }}
                                             {{ form_widget(form.name, {attr: {placeholder: 'カテゴリ名を入力'}}) }}
+                                            {{ form_widget(form.eng_name, {attr: {placeholder: '英語名を入力'}}) }}
                                             {{ form_errors(form.name) }}
+                                            {{ form_errors(form.eng_name) }}
                                             <button class="btn btn-default btn-sm" type="submit">カテゴリ作成</button>
                                         </div>
                                     {% endif %}

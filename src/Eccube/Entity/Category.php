@@ -468,4 +468,17 @@ class Category extends \Eccube\Entity\AbstractEntity
     {
         return $this->Creator;
     }
+    
+    private $eng_name;
+    public function setEngName($name)
+    {
+        $this->eng_name = $name;
+
+        return $this;
+    }
+
+    public function getEngName()
+    {
+        return $this->eng_name;
+    }
 }
