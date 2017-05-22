@@ -1,0 +1,48 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2016 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+
+
+<div id="gnav">
+    <div class="container-fluid inner">
+        <nav>
+            <ul>
+            <li><a class="gnav_shopguide" href="{{ url('help_guide') }}"><img src="{{ app.config.front_urlpath }}/img/common/btn_header_guide.png" alt="Shopping Guide" width="29"><br class="pc_none"><span>Shopping Guide</span></a></li>
+            <li><a class="gnav_contact" href="{{ url('contact') }}"><img src="{{ app.config.front_urlpath }}/img/common/btn_header_contact.png" alt="Contact" width="29"><br class="pc_none"><span>Contact</span></a></li>
+            <li><a class="gnav_mypage" href="{{ url('mypage') }}"><img src="{{ app.config.front_urlpath }}/img/common/btn_header_login.png" alt="Login" width="29">
+                {% if is_granted('ROLE_USER') %}
+                    <span class="pctb">Mypage</span></a>
+                {% else %}
+                    <span class="pctb">Log In</span></a>
+                {% endif %}
+            </li>
+            <li><a class="gnav_cart" href="{{ url('cart') }}">
+                    {% if Cart.CartItems|length > 0 %}
+                        <span class="carticon"><img src="{{ app.config.front_urlpath }}/img/common/btn_header_cart.png" alt="Cart" width="29"><span class="badge">{{ Cart.total_quantity }}</span></span><span class="pctb">Shopping Cart</span>
+                    {% else %}
+                        <span class="carticon"><img src="{{ app.config.front_urlpath }}/img/common/btn_header_cart.png" alt="Cart" width="29"><span class="pctb">Shopping Cart</span></span>
+                    {% endif %}
+                </a>
+            </li>
+            </ul>
+        </nav>
+    </div>
+</div>

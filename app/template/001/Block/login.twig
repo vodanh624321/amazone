@@ -1,0 +1,49 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2016 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% if is_granted('ROLE_USER') %}
+
+    <div id="member" class="member drawer_block pc">
+        <p class="aC">ようこそ　{{ app.user.name01 }} {{ app.user.name02 }} 様</p>
+        <ul class="member_link">
+            <li><a href="{{ url('mypage') }}" class="btn btn-success">マイページ</a></li>
+            {% if BaseInfo.option_favorite_product == 1 %}
+                <li><a href="{{ url('mypage_favorite') }}" class="btn btn-success">お気に入り</a></li>
+            {% endif %}
+            <li><a href="{{ url('logout') }}" class="btn btn-info">ログアウト</a></li>
+        </ul>
+    </div>
+{% else %}
+    <div id="member" class="member drawer_block pc">
+        <ul class="member_link">
+            <li><a href="{{ url('entry') }}" class="btn btn-success">会員登録</a></li>
+            <li class="btn-login"><a href="{{ url('mypage_login') }}" class="btn btn-default">ログイン</a></li>
+        </ul>
+    </div>
+{% endif %}
+<div class="block_outer">
+    <div id="guide_area" class="bloc_body">
+        <ul>
+            <li><a href="{{ url('help_guide') }}" class="btn btn-block btn-default">お買い物ガイド</a></li>
+            <li><a href="{{ url('contact') }}" class="btn btn-block btn-default">お問い合わせ</a></li>
+        </ul>
+    </div>
+</div>

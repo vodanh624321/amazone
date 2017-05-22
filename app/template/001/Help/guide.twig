@@ -1,0 +1,91 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2016 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+
+{% block main %}
+
+    <div id="contents" class="main_only">
+        <div id="guide_wrap" class="container-fluid inner no-padding">
+            <div id="main">
+                <h1 class="page-heading">お買い物ガイド</h1>
+                <div id="guide_box__body" class="container-fluid">
+                    <div id="guide_box__body_inner" class="row">
+                        <div id="guide_box__body_item" class="col-sm-12">
+
+
+
+                            <h2 class="heading02">お支払いについて</h2>
+                            <p>取り扱いカードは以下のとおりです。すべてのカード会社で、一括払いが可能となっております。</p>
+                            <div class="table mB20">
+                                <div class="thead">
+                                    <ol>
+                                        <li>カード会社</li>
+                                        <li>支払方法</li>
+                                    </ol>
+                                </div>
+                                <div class="tbody">
+                                    <div class="tr">
+                                        <div class="th">VISA</div>
+                                        <div>リボ,分割（3,5,6,10,12,15,18,20,24回が可能です）<br>
+                                            ボーナス一括（夏　8月払い：12月16日～6月15日、冬　翌年1月払い：7月16日～11月15日）</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div class="th">MASTER</div>
+                                        <div>リボ,分割（3,5,6,10,12,15,18,20,24回が可能です）<br>
+                                            ボーナス一括（夏　8月払い：12月16日～6月15日、冬　翌年1月払い：7月16日～11月15日）</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div class="th">JCB</div>
+                                        <div>リボ,分割（3,5,6,10,12,15,18,20,24回が可能です）<br>
+                                            ボーナス一括（夏　8月払い：12月16日～6月15日、冬　翌年1月払い：7月16日～11月15日）</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div class="th">Diners</div>
+                                        <div>リボ,ボーナス一括（夏　8月払い：12月16日～6月15日、冬　翌年1月払い：7月16日～11月15日）</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div class="th">AMEX</div>
+                                        <div>分割（3,5,6,10,12,15,18,20,24回が可能です）<br>
+                                            ボーナス一括（夏　8月払い：12月16日～6月15日、冬　翌年1月払い：7月16日～11月15日）</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p>【備考】<br>
+                                ・楽天市場のカード決済ではSSLというシステムを利用しております。カード番号は暗号化されて送信されますのでご安心下さい。<br>
+                                ・当カード決済システム上、クレジットカード利用控は発行しておりません。<br>
+                                ・カード会社から送付されますご利用明細をご確認下さい。<br>
+                                ・ご注文の際にお客様の本人確認（電話番号確認等）をお願いする場合もございます。<br>
+                                ・お客様と異なる名義のクレジットカードはご利用できません。</p>
+
+                            <p class="attention">※お客様のご利用状態等によっては、他の決済手段に変更いただく場合がございます。 </p>
+
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

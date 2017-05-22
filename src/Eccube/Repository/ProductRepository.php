@@ -163,6 +163,7 @@ class ProductRepository extends EntityRepository
                 ->addOrderBy('p.id', 'DESC');
         }
 
+    
         return $qb;
     }
 

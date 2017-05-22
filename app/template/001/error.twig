@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ BaseInfo.shop_name }} / {{ error_title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{{ app.config.front_urlpath }}/img/common/favicon.ico">
+    <link href='//fonts.googleapis.com/css?family=Josefin+Sans:600' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" id="reloadcss" href="{{ app.config.front_urlpath }}/css/style.css?v={{ constant('Eccube\\Common\\Constant::VERSION') }}">
+    <link rel="stylesheet" href="{{ app.config.front_urlpath }}/css/slick.css?v={{ constant('Eccube\\Common\\Constant::VERSION') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{ app.config.front_urlpath }}/js/vendor/jquery-1.11.3.min.js"><\/script>')</script>
+</head>
+<body id="page_404" class="other_page">
+<div id="wrapper">
+    <header id="header">
+        <div class="container-fluid inner">
+            <!-- ▼ロゴ -->
+            <div class="header_logo_area">
+                <h1 class="header_logo"><a href="{{ url('homepage') }}">{{ BaseInfo.shop_name }}</a></h1>
+            </div>
+            <!-- ▼商品検索 -->
+
+            <!-- ▲商品検索 -->
+
+        </div>
+    </header>
+
+
+    <div id="contents" class="theme_side_left">
+        <div id="contents_top">
+            {# ▼TOP COLUMN #}
+
+            <div id="gnav">
+                <div class="container-fluid inner">
+                    <nav>
+                        <ul>
+                            <li><a class="gnav_shopguide" href="{{ url('help_guide') }}"><img src="{{ app.config.front_urlpath }}/img/common/btn_header_guide.png" alt="Shopping Guide" width="29"><br class="pc_none"><span>Shopping Guide</span></a></li>
+                            <li><a class="gnav_contact" href="{{ url('contact') }}"><img src="{{ app.config.front_urlpath }}/img/common/btn_header_contact.png" alt="Contact" width="29"><br class="pc_none"><span>Contact</span></a></li>
+                            <li><a class="gnav_mypage" href="{{ url('mypage') }}"><img src="{{ app.config.front_urlpath }}/img/common/btn_header_login.png" alt="Login" width="29">
+                                    <span class="pctb">Mypage</span></a>
+                            </li>
+                            <li><a class="gnav_cart" href="{{ url('contact') }}">
+                                    <span class="carticon"><img src="{{ app.config.front_urlpath }}/img/common/btn_header_cart.png" alt="Cart" width="29"><span class="pctb">Shopping Cart</span></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            {# ▲TOP COLUMN #}
+        </div>
+
+        <div class="container-fluid inner clearfix">
+
+            <div id="onecolumn">
+            <div id="main_middle">
+            <h1 class="page-heading">{{ error_title }}</h1>
+
+            <div id="default_error_wrap" class="container-fluid">
+                <div id="default_error_box" class="message_box">
+                    <div id="default_error_box__body" class="row no-padding">
+                        <div id="default_error__message" class="col-sm-12">
+                            <p>{{ error_message }}</p>
+                        </div>
+                    </div>
+                    <div id="default_error__footer" class="row">
+                        <div id="default_error__top_button" class="btn_group btn_area col-sm-offset-4 col-sm-4">
+                            <a href="{{ url('homepage') }}"><p><button type="button" class="btn btn-info btn-block">トップページへ</button></p></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <footer id="footer">
+
+        <div class="container-fluid inner clearfix">
+            <span id="pagetop"><a href="#header" class="anchor">PAGETOP</a></span>
+            <ul>
+                <li><a href="{{ url('help_about') }}">当サイトについて</a></li>
+                <li><a href="{{ url('help_tradelaw') }}">特定商取引法に基づく表記</a></li>
+                <li><a href="{{ url('help_privacy') }}">プライバシーポリシー</a></li>
+            </ul>
+            <div class="footer_logo_area">
+                <p class="copyright">copyright (c) {{ BaseInfo.shop_name }} all rights reserved.</p>
+            </div>
+        </div>
+
+    </footer>
+
+    <div id="drawer" class="drawer sp">
+    </div>
+
+</div>
+
+<div class="overlay"></div>
+
+<script src="{{ app.config.front_urlpath }}/js/vendor/bootstrap.custom.min.js?v={{ constant('Eccube\\Common\\Constant::VERSION') }}"></script>
+<script src="{{ app.config.front_urlpath }}/js/vendor/slick.min.js?v={{ constant('Eccube\\Common\\Constant::VERSION') }}"></script>
+<script src="{{ app.config.front_urlpath }}/js/function.js?v={{ constant('Eccube\\Common\\Constant::VERSION') }}"></script>
+<script src="{{ app.config.front_urlpath }}/js/eccube.js?v={{ constant('Eccube\\Common\\Constant::VERSION') }}"></script>
+
+</body>
+</html>
+
