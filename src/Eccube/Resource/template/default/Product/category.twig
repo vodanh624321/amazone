@@ -1,0 +1,539 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set body_class = 'product_page' %}
+{% block stylesheet %}
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+        @import url('https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font: 12px/1 'Montserrat', sans-serif;
+            color: #333;
+            background: #333;
+            overflow-x: hidden;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100%;
+        }
+
+        .sidebar {
+            position: absolute;
+            width: 220px;
+            background-color: white;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            box-shadow: 0 0 1px rgba(0, 0, 0, 1);
+            transform: translate3d(0, 0, 0);
+            transition: transform .3s;
+        }
+
+        .content.isOpen {
+            transform: translate3d(220px, 0, 0);
+            max-width: 900px;
+        }
+
+        .button {
+            cursor: pointer;
+        }
+
+        .button:before {
+            content: '\f0c9';
+            font: 42px fontawesome;
+        }
+
+        /* Demo Navigation */
+
+        .title {
+            font-size: 20px;
+            line-height: 60px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 7px;
+            color: #eee;
+            border-bottom: 1px solid #222;
+            background: #2a2a2a;
+        }
+
+        .nav li a {
+            position: relative;
+            display: block;
+            padding: 15px 15px 15px 50px;
+            font-size: 15px;
+            color: #3F5467;
+            border-bottom: 1px solid #222;
+            border-left: 1px solid #222;
+        }
+
+        .nav li a:before {
+            font: 14px fontawesome;
+            position: absolute;
+            top: 14px;
+            left: 20px;
+        }
+
+        /*.nav li:nth-child(1) a:before {*/
+        /*content: '\f00a';*/
+        /*}*/
+
+        /*.nav li:nth-child(2) a:before {*/
+        /*content: '\f012';*/
+        /*}*/
+
+        /*.nav li:nth-child(3) a:before {*/
+        /*content: '\f0e8';*/
+        /*}*/
+
+        /*.nav li:nth-child(4) a:before {*/
+        /*content: '\f0c3';*/
+        /*}*/
+
+        /*.nav li:nth-child(5) a:before {*/
+        /*content: '\f022';*/
+        /*}*/
+
+        /*.nav li:nth-child(6) a:before {*/
+        /*content: '\f115';*/
+        /*}*/
+
+        /*.nav li:nth-child(7) a:before {*/
+        /*content: '\f085';*/
+        /*}*/
+
+        /*.nav li:nth-child(8) a:before {*/
+        /*content: '\f023';*/
+        /*left: 23px;*/
+        /*}*/
+
+        .nav li a:hover {
+            background: #f0f0f0;
+            color: #2a6496;
+            font-weight: bold;
+        }
+
+        .nav li a.active {
+            box-shadow: inset 5px 0 0 #5b5, inset 6px 0 0 #222;
+            background: #f0f0f0;
+            color: #2a6496;
+            font-weight: bold;
+        }
+
+        /* Demo Description */
+
+        h1 {
+            margin: 25px 0 15px;
+            font-size: 28px;
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 400;
+            color: #999;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        #loader {
+            border: 16px solid green; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-bottom: 16px solid red;
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            animation: spin 2s linear infinite;
+            position: fixed;
+            top: 40%;
+            left: 46%;
+            display: none;
+            z-index: 9999;
+        }
+
+        #overlay {
+            z-index: 1000;
+            width: 100%;
+            height: 100%;
+            background: white;
+            position: fixed;
+            top: 0; /* slight offeset to allow toggle button to work */
+            left: 0;
+            display: none;
+            /* 0.4 = 40% */
+            opacity: 0.95;
+            filter: alpha(opacity=70); /* For IE8 and earlier */
+        }
+
+        .level3_group {
+            padding: 15px 15px 15px 30px;
+            border-bottom: none;
+            border-top: 1px solid #222;
+            font-size: 15px;
+            border-left: 1px solid #222;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+    </style>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        // 並び順を変更
+        function fnChangeOrderBy(orderby) {
+            eccube.setValue('orderby', orderby);
+            eccube.setValue('pageno', 1);
+            eccube.submitForm();
+        }
+
+        // 表示件数を変更
+        function fnChangeDispNumber(dispNumber) {
+            eccube.setValue('disp_number', dispNumber);
+            eccube.setValue('pageno', 1);
+            eccube.submitForm();
+        }
+
+        function getProductList(category_id, level, all) {
+            $.ajax({
+                type: 'POST',
+                data: {
+                    'category_id': category_id,
+                    'level': level,
+                    'all': all
+                },
+                url: '{{ url('product_realtime') }}',
+                success: function (data) {
+                    // モーダルに結果を書き出し.
+                    var height = $("#sidebar").height();
+                    $("#content").css("min-height", height);
+                    $('#content').html(data);
+                    var items = $("#all_items").val();
+                    $("#count_items").text("対象商品:" + items + "件");
+                    $("#overlay").hide();
+                    $("#loader").hide();
+
+                },
+                error: function () {
+                    $("#overlay").hide();
+                    $("#loader").hide();
+                    console.log('search product failed.');
+                }
+            });
+        }
+
+        // 商品表示BOXの高さを揃える
+        $(window).load(function () {
+            $('.product_item').matchHeight();
+            $(".category-nav").hide();
+        });
+
+        $(document).ready(function () {
+            var cateID = $("#category_id").val();
+            if (cateID != "") {
+                var element = $(".cate" + cateID);
+                if (element.attr("level") == 1) {
+                    element.addClass("active");
+                    $(".parent" + cateID).removeClass("hide");
+                }
+
+                if (element.attr("level") == 2) {
+                    element.addClass("active");
+                    $(".parent" + element.attr("parent_id")).removeClass("hide");
+                    $(".cate" + element.attr("parent_id")).addClass("active");
+                }
+
+                if (element.attr("level") == 3) {
+                    $("#title3").removeClass("hide");
+                    $("#nav3").removeClass('hide');
+                    element.find("a").addClass("active");
+                    element.removeClass("hide");
+                    $(".parent" + element.attr("parent_id")).removeClass("hide");
+                    $(".cate" + element.attr("parent_id")).addClass("active");
+                    $(".parent" + element.attr("grand_parent")).removeClass("hide");
+                    $(".cate" + element.attr("grand_parent")).addClass("active");
+                }
+
+            } else {
+                $(".cate1").addClass("active");
+                $(".parent1").removeClass("hide");
+            }
+
+            var height = $("#sidebar").height();
+            $("#content").css("min-height", height);
+            $(document).on('click', '.button', function () {
+                $('.content').toggleClass('isOpen');
+            });
+
+            $("ul.nav li a").click(function () {
+                var active = $(this).parent().parent().find(".active");
+                var active_id = active.attr("category_id");
+                var category_id = $(this).attr("category_id");
+                var level = $(this).attr("level");
+                $("#category_id").val(category_id);
+                if (active_id != category_id || level == 3) {
+                    if (level != 3) {
+                        active.toggleClass('active');
+                        $(this).toggleClass('active');
+                    } else {
+                        $(this).toggleClass('active');
+                        //get all active level3 category.
+                        var all = $("#nav3 .active").map(function () {
+                            return $(this).attr("category_id");
+                        }).get().join();
+
+                        if (all != "") {
+                            $("#overlay").show();
+                            $("#loader").show();
+                            if (all.indexOf(",") > 0) {
+                                var category = all.split(",");
+                                getProductList(category[0], 3, all);
+                            } else {
+                                getProductList(all, 3, all);
+
+                            }
+                        } else {
+                            $("#overlay").show();
+                            $("#loader").show();
+                            getProductList($(this).attr("parent_id"), 2);
+                        }
+
+                        return false;
+                    }
+
+                    if (level == 1) {
+                        $('a[parent_id="' + category_id + '"]').toggleClass('hide');
+                        $('a[parent_id="' + active_id + '"]').toggleClass('hide');
+                        $("#nav2").find(".active").removeClass("active");
+                        $("#nav3").addClass('hide');
+                        $("#title3").addClass('hide');
+                    }
+
+                    if (level == 2) {
+                        $('#nav3 li.category' + category_id).removeClass('hide');
+                        $('#nav3 li.category' + active_id).addClass('hide');
+                        $("#nav3").find(".active").removeClass("active");
+                        $("#nav3").removeClass('hide');
+                        $("#title3").removeClass('hide');
+                    }
+
+                    $("#overlay").show();
+                    $("#loader").show();
+                    getProductList(category_id, 1);
+                }
+
+                return false;
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+    
+    <form name="form1" id="form1" method="get" action="?">
+        {{ form_widget(search_form) }}
+    </form>
+
+    <div class='wrapper'>
+        <div class='sidebar' id="sidebar">
+            <div class='title' style="background: #0092C4;"><span id="count_items">対象商品:{{ pagination.totalItemCount }}
+                    件</span></div>
+            <div class='title'>マインカテゴリ</div>
+            <ul class='nav nav1'>
+                {% for Category in Categories %}
+                    <li>
+                        <a category_id="{{ Category.id }}" level="1" class="cate{{ Category.id }}">
+                            {{ Category.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class='title'>サブカテゴリ</div>
+            <ul class='nav' id="nav2">
+                {% for Category in Categories %}
+                    {% if Category.children|length > 0 %}
+                        {% for child in Category.children %}
+                            {% if child.hasProductCategories %}
+                                <li>
+                                    <a category_id="{{ child.id }}" parent_id="{{ Category.id }}"
+                                       class="hide cate{{ child.id }} parent{{ Category.id }}" level="2">
+                                        {{ child.name }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <div class='title hide' id="title3">詳細カテゴリ</div>
+            <ul class='nav hide' id="nav3">
+                {% for Category in Categories %}
+                    {% if Category.children|length > 0 %}
+                        {% for child in Category.children %}
+                            {% if child.children|length > 0 %}
+                                {% for grandson in child.children %}
+                                    {% if grandson.children|length > 0 and grandson.hasProductCategories %}
+                                        <li class="level3_group hide category{{ child.id }} parent{{ child.id }} cate{{ grandson.id }}"
+                                            grand_parent="{{ Category.id }}"
+                                            parent_id="{{ child.id }}">{{ grandson.name }}</li>
+                                        {% for level4 in grandson.children %}
+                                            {% if level4.hasProductCategories %}
+                                                <li class="hide category{{ child.id }} parent{{ child.id }} cate{{ level4.id }}"
+                                                    grand_parent="{{ Category.id }}" level="3"
+                                                    parent_id="{{ child.id }}">
+                                                    <a href="{{ url('product_list') }}?category_id={{ level4.id }}"
+                                                       category_id="{{ level4.id }}" level="3"
+                                                       style="border-bottom: none;" parent_id="{{ child.id }}">
+                                                        {{ level4.name }}
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                <li style="border-bottom: 1px solid #222;"></li>
+            </ul>
+        </div>
+        <div class='content isOpen' id="content">
+
+            <div id="result_info_box" class="row">
+                <a class='button'></a>
+                <!-- ▲topicpath▲ -->
+                <form name="page_navi_top" id="page_navi_top" action="?">
+                    {% if pagination.totalItemCount > 0 %}
+                        <div id="result_info_box__menu_box" class="col-sm-6 no-padding col-sm-offset-6">
+                            <ul id="result_info_box__menu" class="pagenumberarea clearfix">
+                                <li id="result_info_box__disp_menu">
+                                    {{ form_widget(disp_number_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeDispNumber(this.value);"}}) }}
+                                </li>
+                                <li id="result_info_box__order_menu">
+                                    {{ form_widget(order_by_form, {'id': '', 'attr': {'onchange': "javascript:fnChangeOrderBy(this.value);"}}) }}
+                                </li>
+                            </ul>
+                        </div>
+
+                        {% for f in disp_number_form.getIterator %}
+                            {% if f.vars.name matches '[^plg*]' %}
+                                {{ form_label(f) }}
+                                {{ form_widget(f) }}
+                                {{ form_errors(f) }}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for f in order_by_form.getIterator %}
+                            {% if f.vars.name matches '[^plg*]' %}
+                                {{ form_label(f) }}
+                                {{ form_widget(f) }}
+                                {{ form_errors(f) }}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p id="result_info_box__item_count" class="intro col-sm-6"><strong style="display: none;"><span
+                                        id="productscount">{{ pagination.totalItemCount }}</span>件</strong>お探しの商品は見つかりませんでした。
+                        </p>
+                    {% endif %}
+                </form>
+            </div>
+
+            <!-- ▼item_list▼ -->
+            <div id="item_list">
+                <div class="row no-padding">
+                    {% for Product in pagination %}
+                        <div id="result_list_box--{{ Product.id }}" class="col-sm-3 col-xs-6">
+                            <div id="result_list__item--{{ Product.id }}" class="product_item">
+                                <a href="{{ url('product_detail', {'id': Product.id}) }}">
+                                    <div id="result_list__image--{{ Product.id }}" class="item_photo">
+                                        <img src="{{ app.config.image_save_urlpath }}/{{ Product.main_list_image|no_image_product }}">
+                                    </div>
+                                    <dl id="result_list__detail--{{ Product.id }}">
+                                        <dt id="result_list__name--{{ Product.id }}"
+                                            class="item_name">{{ Product.name }}</dt>
+                                        {% if Product.description_list %}
+                                            <dd id="result_list__description_list--{{ Product.id }}"
+                                                class="item_comment">{{ Product.description_list|raw|nl2br }}</dd>
+                                        {% endif %}
+                                        {% if Product.hasProductClass %}
+                                            {% if Product.getPrice02Min == Product.getPrice02Max %}
+                                                <dd id="result_list__price02_inc_tax--{{ Product.id }}"
+                                                    class="item_price">
+                                                    {{ Product.getPrice02IncTaxMin|price }}
+                                                </dd>
+                                            {% else %}
+                                                <dd id="result_list__price02_inc_tax--{{ Product.id }}"
+                                                    class="item_price">
+                                                    {{ Product.getPrice02IncTaxMin|price }}
+                                                    ～ {{ Product.getPrice02IncTaxMax|price }}
+                                                </dd>
+                                            {% endif %}
+                                        {% else %}
+                                            <dd id="result_list__price02_inc_tax--{{ Product.id }}"
+                                                class="item_price">{{ Product.getPrice02IncTaxMin|price }}</dd>
+                                        {% endif %}
+                                    </dl>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- ▲item_list▲ -->
+            {#{% if pagination.totalItemCount > 0 %}#}
+            {#    {% include "pagination.twig" with { 'pages' : pagination.paginationData } %}#}
+            {#{% endif %}#}
+
+        </div>
+    </div>
+
+
+{% endblock %}
