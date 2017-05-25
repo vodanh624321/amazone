@@ -275,7 +275,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         });
 
         $(document).ready(function () {
-            var cateID = $("#category_id").val();
+            //var cateID = $("#category_id").val();
+            var cateID = $("#categoryID").val();
+            $("#category_id").val(cateID);
+            var template_name = $("#template_name").val();
             if (cateID != "") {
                 var element = $(".cate" + cateID);
                 if (element.attr("level") == 1) {
@@ -376,6 +379,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% block main %}
     
+    <input type="hidden" value="{{ Category.id }}" id="categoryID">
+    <input type="hidden" value="category" id="template_name">
     <form name="form1" id="form1" method="get" action="?">
         {{ form_widget(search_form) }}
     </form>

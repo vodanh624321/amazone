@@ -237,6 +237,10 @@ class ProductController
             throw new NotFoundHttpException();
         }
         
+        if ($Category->getLevel() != 1) {
+            throw new NotFoundHttpException();
+        }
+        
         $searchData['category_id'] = $Category;
         
         $qb = $app['eccube.repository.product']->getQueryBuilderBySearchData($searchData);
