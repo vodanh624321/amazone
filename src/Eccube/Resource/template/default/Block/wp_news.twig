@@ -1,0 +1,51 @@
+<script type="text/javascript">
+$(function(){
+    $(".newslist").each(function(){
+        var listLenght = $(this).find("dl").length;
+        if(listLenght>5){
+            $(this).find("dl:gt(4)").each(function(){$(this).hide();});
+            $(this).append('<a id="news_readmore">» もっと見る</a>');
+            var dispNum = 5;
+            $(this).find("#news_readmore").click(function(){
+                dispNum +=5;
+                $(this).parent().find("dl:lt("+dispNum+")").show(400);
+                if (dispNum>=listLenght) {
+                    $(this).hide();
+                }
+            })
+        }
+    });
+});
+</script>
+<div class="col-sm-9 news_contents">
+    <div id="news_area">
+        <h2 class="heading01">新着情報</h2>
+        <div class="accordion">
+            <div class="newslist">
+
+                {% for News in wp_news %}
+                <dl>
+                    <dt>
+                        <span class="date">{{ News['update_date'] }}</span>
+                        <span class="news_title">
+                            {{ News['title'] }}
+                        </span>
+                        {% if News['content'] %}
+                        <span class="angle-circle"><svg class="cb cb-angle-down"><use xlink:href="#cb-angle-down" /></svg></span>
+                        {% endif %}
+                    </dt>
+                    {% if News['content'] %}
+                    <dd>{{ News['content']|raw|nl2br}}
+                        {% if News['link'] %}<br>
+                        <a href="{{ News['link'] }}" target="_blank">
+                        詳しくはこちら
+                        </a>
+                        {% endif %}
+                    </dd>
+                    {% endif %}
+                </dl>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

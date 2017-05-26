@@ -41,6 +41,10 @@ class EccubeServiceProvider implements ServiceProviderInterface
     public function register(BaseApplication $app)
     {
         // Service
+        $app['eccube.service.wp_api'] = $app->share(function () use ($app) {
+            return new \Eccube\Service\WpApiService($app);
+        });
+
         $app['eccube.service.system'] = $app->share(function () use ($app) {
             return new \Eccube\Service\SystemService($app);
         });
